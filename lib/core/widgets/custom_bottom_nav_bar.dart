@@ -42,32 +42,32 @@ class CustomBottomNavBar extends StatelessWidget {
           BottomNavigationBarItem(
             icon: ImageIcon(Assets.icons.home.provider(), color: Colors.grey, size: 20),
             activeIcon: ImageIcon(Assets.icons.home.provider(), color: Colors.white, size: 20),
-            label: AppLocalizations.of(context)?.helloWorld,
+            label: AppLocalizations.of(context)?.home_menu,
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(Assets.icons.schedule.provider(), color: Colors.grey, size: 25),
             activeIcon: ImageIcon(Assets.icons.schedule.provider(), color: Colors.white, size: 25),
-            label: 'Schedule',
+            label: AppLocalizations.of(context)?.schedule_menu
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(Assets.icons.event.provider(), color: Colors.grey, size: 25),
             activeIcon: ImageIcon(Assets.icons.event.provider(), color: Colors.white, size: 25),
-            label: 'Event',
+            label: AppLocalizations.of(context)?.schedule_menu,
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(Assets.icons.group.provider(), color: Colors.grey, size: 25),
             activeIcon: ImageIcon(Assets.icons.group.provider(), color: Colors.white, size: 25),
-            label: 'Group',
+            label: AppLocalizations.of(context)?.groups_menu,
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(Assets.icons.announcement.provider(), color: Colors.grey, size: 25),
             activeIcon: ImageIcon(Assets.icons.announcement.provider(), color: Colors.white, size: 25),
-            label: 'Announcement',
+            label: AppLocalizations.of(context)?.announce_menu,
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(Assets.icons.user.provider(), color: Colors.grey, size: 20),
             activeIcon: ImageIcon(Assets.icons.user.provider(), color: Colors.white, size: 20),
-            label: 'Profile',
+            label: AppLocalizations.of(context)?.profile_menu,
           ),
         ],
       ),

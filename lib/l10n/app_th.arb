@@ -1,6 +1,31 @@
 {
-  "helloWorld": "สวัสดีชาวโลก!",
-  "@helloWorld": {
-    "description": "คำทักทายมาตรฐานของโปรแกรมเมอร์มือใหม่"
+  "@@locale": "th",
+  "app_title": "Unisphere",
+  "@app_title": {
+    "description": "Shown on top of the screen."
+  },
+  "home_menu": "หน้าแรก",
+  "@home_menu": {
+    "description": "Home menu item"
+  },
+  "schedule_menu": "ตารางเรียน",
+  "@schedule_menu": {
+    "description": "Schedule menu item"
+  },
+  "events_menu": "กิจกรรม",
+  "@events_menu": {
+    "description": "Event menu item"
+  },
+  "groups_menu": "กลุ่ม",
+  "@groups_menu": {
+    "description": "Group menu item"
+  },
+  "announce_menu": "ประกาศ",
+  "@announce_menu": {
+    "description": "announce menu item"
+  },
+  "profile_menu": "ฉัน",
+  "@profile_menu": {
+    "description": "Profile menu item"
   }
 }

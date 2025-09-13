@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
           Locale('th'),
           Locale('en'), 
         ],
-        locale: Locale('th'),
+        locale: Locale('en'),
       ),
     );
   }

@@ -1,6 +1,31 @@
 {
-  "helloWorld": "Hello World!",
-  "@helloWorld": {
-    "description": "The conventional newborn programmer greeting"
+  "@@locale": "en",
+  "app_title": "Unisphere",
+  "@app_title": {
+    "description": "Shown on top of the screen."
+  },
+  "home_menu": "Home",
+  "@home_menu": {
+    "description": "Home menu item"
+  },
+  "schedule_menu": "Schedule",
+  "@schedule_menu": {
+    "description": "Schedule menu item"
+  },
+  "events_menu": "Event",
+  "@events_menu": {
+    "description": "Event menu item"
+  },
+  "groups_menu": "Group",
+  "@groups_menu": {
+    "description": "Group menu item"
+  },
+  "announce_menu": "Announce",
+  "@announce_menu": {
+    "description": "announce menu item"
+  },
+  "profile_menu": "Me",
+  "@profile_menu": {
+    "description": "Profile menu item"
   }
 }

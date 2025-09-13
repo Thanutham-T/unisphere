@@ -9,5 +9,23 @@ class AppLocalizationsTh extends AppLocalizations {
   AppLocalizationsTh([String locale = 'th']) : super(locale);
 
   @override
-  String get helloWorld => 'สวัสดีชาวโลก!';
+  String get app_title => 'Unisphere';
+
+  @override
+  String get home_menu => 'หน้าแรก';
+
+  @override
+  String get schedule_menu => 'ตารางเรียน';
+
+  @override
+  String get events_menu => 'กิจกรรม';
+
+  @override
+  String get groups_menu => 'กลุ่ม';
+
+  @override
+  String get announce_menu => 'ประกาศ';
+
+  @override
+  String get profile_menu => 'ฉัน';
 }

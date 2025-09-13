@@ -98,11 +98,47 @@ abstract class AppLocalizations {
     Locale('th'),
   ];
 
-  /// The conventional newborn programmer greeting
+  /// Shown on top of the screen.
   ///
   /// In en, this message translates to:
-  /// **'Hello World!'**
-  String get helloWorld;
+  /// **'Unisphere'**
+  String get app_title;
+
+  /// Home menu item
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home_menu;
+
+  /// Schedule menu item
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get schedule_menu;
+
+  /// Event menu item
+  ///
+  /// In en, this message translates to:
+  /// **'Event'**
+  String get events_menu;
+
+  /// Group menu item
+  ///
+  /// In en, this message translates to:
+  /// **'Group'**
+  String get groups_menu;
+
+  /// announce menu item
+  ///
+  /// In en, this message translates to:
+  /// **'Announce'**
+  String get announce_menu;
+
+  /// Profile menu item
+  ///
+  /// In en, this message translates to:
+  /// **'Me'**
+  String get profile_menu;
 }
 
 class _AppLocalizationsDelegate

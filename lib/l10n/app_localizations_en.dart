@@ -9,5 +9,23 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get helloWorld => 'Hello World!';
+  String get app_title => 'Unisphere';
+
+  @override
+  String get home_menu => 'Home';
+
+  @override
+  String get schedule_menu => 'Schedule';
+
+  @override
+  String get events_menu => 'Event';
+
+  @override
+  String get groups_menu => 'Group';
+
+  @override
+  String get announce_menu => 'Announce';
+
+  @override
+  String get profile_menu => 'Me';
 }

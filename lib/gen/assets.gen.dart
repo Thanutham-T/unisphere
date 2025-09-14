@@ -37,6 +37,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/home.png
   AssetGenImage get home => const AssetGenImage('assets/icons/home.png');
 
+  /// File path: assets/icons/logo.png
+  AssetGenImage get logo => const AssetGenImage('assets/icons/logo.png');
+
   /// File path: assets/icons/schedule.png
   AssetGenImage get schedule =>
       const AssetGenImage('assets/icons/schedule.png');
@@ -58,6 +61,7 @@ class $AssetsIconsGen {
     event,
     group,
     home,
+    logo,
     schedule,
     unisphereIcon,
     unisphereLogo,

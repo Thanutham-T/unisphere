@@ -11,6 +11,16 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsAnimationsGen {
+  const $AssetsAnimationsGen();
+
+  /// File path: assets/animations/splash_animation.mp4
+  String get splashAnimation => 'assets/animations/splash_animation.mp4';
+
+  /// List of all assets
+  List<String> get values => [splashAnimation];
+}
+
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
@@ -31,6 +41,14 @@ class $AssetsIconsGen {
   AssetGenImage get schedule =>
       const AssetGenImage('assets/icons/schedule.png');
 
+  /// File path: assets/icons/unisphere_icon.png
+  AssetGenImage get unisphereIcon =>
+      const AssetGenImage('assets/icons/unisphere_icon.png');
+
+  /// File path: assets/icons/unisphere_logo.png
+  AssetGenImage get unisphereLogo =>
+      const AssetGenImage('assets/icons/unisphere_logo.png');
+
   /// File path: assets/icons/user.png
   AssetGenImage get user => const AssetGenImage('assets/icons/user.png');
 
@@ -41,6 +59,8 @@ class $AssetsIconsGen {
     group,
     home,
     schedule,
+    unisphereIcon,
+    unisphereLogo,
     user,
   ];
 }
@@ -48,6 +68,7 @@ class $AssetsIconsGen {
 class Assets {
   const Assets._();
 
+  static const $AssetsAnimationsGen animations = $AssetsAnimationsGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
 }
 

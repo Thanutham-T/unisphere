@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:splash_master/core/splash_master.dart';
 
 import 'package:unisphere/config/routes/app_router.dart';
 import 'package:unisphere/config/themes/app_theme.dart';
@@ -12,9 +13,9 @@ import 'package:unisphere/l10n/app_localizations.dart';
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-
+  
   await di.initCriticalServices();
-
+  SplashMaster.initialize();
   runApp(const MyApp());
 
   Future.microtask(() => di.initNonCriticalServices());

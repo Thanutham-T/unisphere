@@ -26,6 +26,7 @@ dependencies:
   dartz: ^0.10.1
   equatable: ^2.0.7
   flutter_native_splash: ^2.4.6
+  splash_master: ^0.0.3
 
 dev_dependencies:
   flutter_test:
@@ -46,7 +47,6 @@ flutter_gen:
   integrations:
     image: true
     flutter_svg: true
-    rive: true
     lottie: true
 
 flutter:
@@ -55,6 +55,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/animations/
 
 flutter_launcher_icons:
   image_path: "assets/icons/unisphere_icon.png"

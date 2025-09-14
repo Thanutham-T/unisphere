@@ -10,7 +10,7 @@ import '../routes/middleware.dart';
 part 'app_router.g.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: Routes.dashboard,
+  initialLocation: Routes.splash,
   debugLogDiagnostics: true,
   redirect: (context, state) async {
     final redirectPath = await Middleware().routeMiddleware(state);

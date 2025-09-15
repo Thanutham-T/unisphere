@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../injector.dart' as di;
+import '../../core/cubits/fullscreen_cubit.dart';
 
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
@@ -20,7 +21,10 @@ import '../../features/setting/presentation/screens/setting_screen.dart';
 
 class RouteBuilders {
   static Widget buildSplashScreen() {
-    return const SplashScreen();
+    return BlocProvider(
+      create: (_) => FullscreenCubit(),
+      child: const SplashScreen(),
+    );
   }
 
   static Widget buildOnboardingScreen() {

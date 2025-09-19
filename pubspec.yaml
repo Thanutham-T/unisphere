@@ -29,6 +29,7 @@ dependencies:
   splash_master: ^0.0.3
   introduction_screen: ^4.0.0
   smooth_page_indicator: ^1.2.1
+  lottie: ^3.3.2
 
 dev_dependencies:
   flutter_test:
@@ -58,6 +59,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/animations/
+    - assets/animations/lotties/
 
 flutter_launcher_icons:
   image_path: "assets/icons/unisphere_icon.png"

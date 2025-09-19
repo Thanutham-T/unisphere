@@ -104,41 +104,65 @@ abstract class AppLocalizations {
   /// **'Unisphere'**
   String get app_title;
 
-  /// Home menu item
+  /// Home menu item using for bottom navigator bar
   ///
   /// In en, this message translates to:
   /// **'Home'**
   String get home_menu;
 
-  /// Schedule menu item
+  /// Schedule menu item for bottom navigator bar
   ///
   /// In en, this message translates to:
   /// **'Schedule'**
   String get schedule_menu;
 
-  /// Event menu item
+  /// Event menu item for bottom navigator bar
   ///
   /// In en, this message translates to:
   /// **'Event'**
   String get events_menu;
 
-  /// Group menu item
+  /// Group menu item for bottom navigator bar
   ///
   /// In en, this message translates to:
   /// **'Group'**
   String get groups_menu;
 
-  /// announce menu item
+  /// announce menu item for bottom navigator bar
   ///
   /// In en, this message translates to:
   /// **'Announce'**
   String get announce_menu;
 
-  /// Profile menu item
+  /// Profile menu item for bottom navigator bar
   ///
   /// In en, this message translates to:
   /// **'Me'**
   String get profile_menu;
+
+  /// Default button name for custom_onboard_button for On-Boarding page
+  ///
+  /// In en, this message translates to:
+  /// **'Button'**
+  String get onboarding_name_button_default;
+
+  /// Next button name Text for custom_onboard_button for On-Boarding page
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboarding_name_button_next;
+
+  /// Skip button name Text for custom_onboard_button for On-Boarding page
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboarding_name_button_skip;
+
+  /// Done button name Text for custom_onboard_button for On-Boarding page
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get onboarding_name_button_done;
 }
 
 class _AppLocalizationsDelegate

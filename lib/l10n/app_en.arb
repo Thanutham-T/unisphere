@@ -6,26 +6,42 @@
   },
   "home_menu": "Home",
   "@home_menu": {
-    "description": "Home menu item"
+    "description": "Home menu item using for bottom navigator bar"
   },
   "schedule_menu": "Schedule",
   "@schedule_menu": {
-    "description": "Schedule menu item"
+    "description": "Schedule menu item for bottom navigator bar"
   },
   "events_menu": "Event",
   "@events_menu": {
-    "description": "Event menu item"
+    "description": "Event menu item for bottom navigator bar"
   },
   "groups_menu": "Group",
   "@groups_menu": {
-    "description": "Group menu item"
+    "description": "Group menu item for bottom navigator bar"
   },
   "announce_menu": "Announce",
   "@announce_menu": {
-    "description": "announce menu item"
+    "description": "announce menu item for bottom navigator bar"
   },
   "profile_menu": "Me",
   "@profile_menu": {
-    "description": "Profile menu item"
+    "description": "Profile menu item for bottom navigator bar"
+  },
+  "onboarding_name_button_default": "Button",
+  "@onboarding_name_button_default": {
+    "description": "Default button name for custom_onboard_button for On-Boarding page"
+  },
+  "onboarding_name_button_next": "Next",
+  "@onboarding_name_button_next": {
+    "description": "Next button name Text for custom_onboard_button for On-Boarding page"
+  },
+  "onboarding_name_button_skip": "Skip",
+  "@onboarding_name_button_skip": {
+    "description": "Skip button name Text for custom_onboard_button for On-Boarding page"
+  },
+  "onboarding_name_button_done": "Get Started",
+  "@onboarding_name_button_done": {
+    "description": "Done button name Text for custom_onboard_button for On-Boarding page"
   }
 }

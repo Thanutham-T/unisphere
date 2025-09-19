@@ -28,4 +28,16 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get profile_menu => 'ฉัน';
+
+  @override
+  String get onboarding_name_button_default => 'ปุ่มกด';
+
+  @override
+  String get onboarding_name_button_next => 'ถัดไป';
+
+  @override
+  String get onboarding_name_button_skip => 'ข้าม';
+
+  @override
+  String get onboarding_name_button_done => 'เริ่มต้นเลย';
 }

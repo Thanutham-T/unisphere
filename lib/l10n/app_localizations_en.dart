@@ -28,4 +28,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profile_menu => 'Me';
+
+  @override
+  String get onboarding_name_button_default => 'Button';
+
+  @override
+  String get onboarding_name_button_next => 'Next';
+
+  @override
+  String get onboarding_name_button_skip => 'Skip';
+
+  @override
+  String get onboarding_name_button_done => 'Get Started';
 }

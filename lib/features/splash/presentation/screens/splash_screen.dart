@@ -21,7 +21,7 @@ class SplashScreen extends StatelessWidget {
       videoConfig: VideoConfig(videoVisibilityEnum: VisibilityEnum.none),
       customNavigation: () {
         context.read<FullscreenCubit>().exitFullscreen();
-        DashboardRoute().go(context);
+        OnboardingRoute().go(context);
       },
     );
   }

@@ -7,13 +7,14 @@ import 'package:splash_master/core/splash_master.dart';
 import 'package:unisphere/config/routes/app_router.dart';
 import 'package:unisphere/config/themes/app_theme.dart';
 import 'package:unisphere/core/services/key_value_storage_service.dart';
+import 'package:unisphere/core/cubits/theme_cubit.dart';
 import 'package:unisphere/injector.dart' as di;
 import 'package:unisphere/l10n/app_localizations.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  
+
   await di.initCriticalServices();
   SplashMaster.initialize();
   runApp(const MyApp());
@@ -32,21 +33,27 @@ class MyApp extends StatelessWidget {
           value: di.getIt<KeyValueStorageService>(),
         ),
       ],
-      child: MaterialApp.router(
-        title: 'Unisphere',
-        theme: AppTheme.lightTheme,
-        routerConfig: appRouter,
-        localizationsDelegates: [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: [
-          Locale('th'),
-          Locale('en'), 
-        ],
-        locale: Locale('en'),
+      child: BlocProvider<ThemeCubit>(
+        create: (_) => ThemeCubit(di.getIt.get<KeyValueStorageService>()),
+        child: BlocBuilder<ThemeCubit, ThemeMode>(
+          builder: (context, state) {
+            return MaterialApp.router(
+              title: 'Unisphere',
+              themeMode: state,
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              routerConfig: appRouter,
+              localizationsDelegates: [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: const [Locale('th'), Locale('en')],
+              locale: const Locale('en'),
+            );
+          },
+        ),
       ),
     );
   }

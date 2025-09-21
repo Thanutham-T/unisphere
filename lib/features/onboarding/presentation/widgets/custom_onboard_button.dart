@@ -11,17 +11,27 @@ class CustomOnboardButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final buttonText = nameButton ?? AppLocalizations.of(context)?.onboarding_name_button_default ?? 'Button';
+    final buttonText =
+        nameButton ??
+        AppLocalizations.of(context)?.onboarding_button_default ??
+        'Button';
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: smallPadding == true ? 12.0 : 20.0, vertical: 10.0),
+      padding: EdgeInsets.symmetric(
+        horizontal: smallPadding == true ? 10.0 : 20.0,
+        vertical: 10.0,
+      ),
       decoration: BoxDecoration(
-        color: Colors.blue,
+        color: Colors.black,
         borderRadius: BorderRadius.circular(30.0),
       ),
       child: Text(
         buttonText,
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

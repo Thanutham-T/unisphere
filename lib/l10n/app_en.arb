@@ -4,44 +4,104 @@
   "@app_title": {
     "description": "Shown on top of the screen."
   },
-  "home_menu": "Home",
-  "@home_menu": {
-    "description": "Home menu item using for bottom navigator bar"
+
+  "menu_home": "Home",
+  "@menu_home": {
+    "description": "Label for the home menu item"
   },
-  "schedule_menu": "Schedule",
-  "@schedule_menu": {
-    "description": "Schedule menu item for bottom navigator bar"
+  "menu_schedule": "Schedule",
+  "@menu_schedule": {
+    "description": "Label for the schedule menu item"
   },
-  "events_menu": "Event",
-  "@events_menu": {
-    "description": "Event menu item for bottom navigator bar"
+  "menu_event": "Events",
+  "@menu_event": {
+    "description": "Label for the events menu item"
   },
-  "groups_menu": "Group",
-  "@groups_menu": {
-    "description": "Group menu item for bottom navigator bar"
+  "menu_group": "Groups",
+  "@menu_group": {
+    "description": "Label for the groups menu item"
   },
-  "announce_menu": "Announce",
-  "@announce_menu": {
-    "description": "announce menu item for bottom navigator bar"
+  "menu_announce": "Announcements",
+  "@menu_announce": {
+    "description": "Label for the announcement menu item"
   },
-  "profile_menu": "Me",
-  "@profile_menu": {
-    "description": "Profile menu item for bottom navigator bar"
+  "menu_profile": "Profile",
+  "@menu_profile": {
+    "description": "Label for the profile menu item"
   },
-  "onboarding_name_button_default": "Button",
-  "@onboarding_name_button_default": {
-    "description": "Default button name for custom_onboard_button for On-Boarding page"
+
+  "onboarding_button_default": "Button",
+  "@onboarding_button_default": {
+    "description": "Label for default button on onboarding screens"
   },
-  "onboarding_name_button_next": "Next",
-  "@onboarding_name_button_next": {
-    "description": "Next button name Text for custom_onboard_button for On-Boarding page"
+  "onboarding_button_next": "Next",
+  "@onboarding_button_next": {
+    "description": "Label for the next button on onboarding screens"
   },
-  "onboarding_name_button_skip": "Skip",
-  "@onboarding_name_button_skip": {
-    "description": "Skip button name Text for custom_onboard_button for On-Boarding page"
+  "onboarding_button_skip": "Skip",
+  "@onboarding_button_skip": {
+    "description": "Label for the skip button on onboarding screens"
   },
-  "onboarding_name_button_done": "Get Started",
-  "@onboarding_name_button_done": {
-    "description": "Done button name Text for custom_onboard_button for On-Boarding page"
+  "onboarding_button_done": "Get Started",
+  "@onboarding_button_done": {
+    "description": "Label for the done button to finish onboarding"
+  },
+
+  "onboarding_title_1": "Welcome to UNISPHERE.",
+  "@onboarding_title_1": {
+    "description": "Title for onboarding screen 1 - Welcome message"
+  },
+  "onboarding_title_2": "Carry your Schedule\nAnywhere, Anytime",
+  "@onboarding_title_2": {
+    "description": "Title for onboarding screen 2 - Carry schedule anywhere"
+  },
+  "onboarding_title_3": "Hot University Events\nYou Shouldn't Miss!",
+  "@onboarding_title_3": {
+    "description": "Title for onboarding screen 3 - Highlight events"
+  },
+  "onboarding_title_4": "Go Far Together with\nthe Right Study Group!",
+  "@onboarding_title_4": {
+    "description": "Title for onboarding screen 4 - Study groups"
+  },
+  "onboarding_title_5": "No Worries if You Get Lost,\nCampus Map is Here!",
+  "@onboarding_title_5": {
+    "description": "Title for onboarding screen 5 - Campus map feature"
+  },
+  "onboarding_title_6": "Never Miss Important\nAnnouncements!",
+  "@onboarding_title_6": {
+    "description": "Title for onboarding screen 6 - Announcements feature"
+  },
+  "onboarding_title_7": "Always Ready,\nEven Offline",
+  "@onboarding_title_7": {
+    "description": "Title for onboarding screen 7 - Offline access"
+  },
+
+  "onboarding_body_1": "Manage university life easily in one app — schedules, events, study groups and more.",
+  "@onboarding_body_1": {
+    "description": "Body text for onboarding screen 1 explaining app features"
+  },
+  "onboarding_body_2": "Manage and view your daily or session schedules with reminders before classes.",
+  "@onboarding_body_2": {
+    "description": "Body text for onboarding screen 2 about schedule management"
+  },
+  "onboarding_body_3": "Discover fun events held within the university. Follow and join events you shouldn't miss for a complete university experience.",
+  "@onboarding_body_3": {
+    "description": "Body text for onboarding screen 3 about events"
+  },
+  "onboarding_body_4": "No more studying alone! Find or create study groups to chat and prepare for exams with friends in your faculty or course.",
+  "@onboarding_body_4": {
+    "description": "Body text for onboarding screen 4 about study groups"
+  },
+  "onboarding_body_5": "Can't find your classroom? Don't worry! View interactive campus maps with walking paths, important buildings, and useful location info.",
+  "@onboarding_body_5": {
+    "description": "Body text for onboarding screen 5 about campus map"
+  },
+  "onboarding_body_6": "Get real-time news and announcements with notifications to never miss the most important university updates.",
+  "@onboarding_body_6": {
+    "description": "Body text for onboarding screen 6 about announcements"
+  },
+  "onboarding_body_7": "Schedules, announcements, or maps — download and view them anytime, even without internet. The app keeps your important info accessible.",
+  "@onboarding_body_7": {
+    "description": "Body text for onboarding screen 7 about offline access"
   }
 }

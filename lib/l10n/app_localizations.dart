@@ -104,65 +104,149 @@ abstract class AppLocalizations {
   /// **'Unisphere'**
   String get app_title;
 
-  /// Home menu item using for bottom navigator bar
+  /// Label for the home menu item
   ///
   /// In en, this message translates to:
   /// **'Home'**
-  String get home_menu;
+  String get menu_home;
 
-  /// Schedule menu item for bottom navigator bar
+  /// Label for the schedule menu item
   ///
   /// In en, this message translates to:
   /// **'Schedule'**
-  String get schedule_menu;
+  String get menu_schedule;
 
-  /// Event menu item for bottom navigator bar
+  /// Label for the events menu item
   ///
   /// In en, this message translates to:
-  /// **'Event'**
-  String get events_menu;
+  /// **'Events'**
+  String get menu_event;
 
-  /// Group menu item for bottom navigator bar
+  /// Label for the groups menu item
   ///
   /// In en, this message translates to:
-  /// **'Group'**
-  String get groups_menu;
+  /// **'Groups'**
+  String get menu_group;
 
-  /// announce menu item for bottom navigator bar
+  /// Label for the announcement menu item
   ///
   /// In en, this message translates to:
-  /// **'Announce'**
-  String get announce_menu;
+  /// **'Announcements'**
+  String get menu_announce;
 
-  /// Profile menu item for bottom navigator bar
+  /// Label for the profile menu item
   ///
   /// In en, this message translates to:
-  /// **'Me'**
-  String get profile_menu;
+  /// **'Profile'**
+  String get menu_profile;
 
-  /// Default button name for custom_onboard_button for On-Boarding page
+  /// Label for default button on onboarding screens
   ///
   /// In en, this message translates to:
   /// **'Button'**
-  String get onboarding_name_button_default;
+  String get onboarding_button_default;
 
-  /// Next button name Text for custom_onboard_button for On-Boarding page
+  /// Label for the next button on onboarding screens
   ///
   /// In en, this message translates to:
   /// **'Next'**
-  String get onboarding_name_button_next;
+  String get onboarding_button_next;
 
-  /// Skip button name Text for custom_onboard_button for On-Boarding page
+  /// Label for the skip button on onboarding screens
   ///
   /// In en, this message translates to:
   /// **'Skip'**
-  String get onboarding_name_button_skip;
+  String get onboarding_button_skip;
 
-  /// Done button name Text for custom_onboard_button for On-Boarding page
+  /// Label for the done button to finish onboarding
   ///
   /// In en, this message translates to:
   /// **'Get Started'**
-  String get onboarding_name_button_done;
+  String get onboarding_button_done;
+
+  /// Title for onboarding screen 1 - Welcome message
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to UNISPHERE.'**
+  String get onboarding_title_1;
+
+  /// Title for onboarding screen 2 - Carry schedule anywhere
+  ///
+  /// In en, this message translates to:
+  /// **'Carry your Schedule\nAnywhere, Anytime'**
+  String get onboarding_title_2;
+
+  /// Title for onboarding screen 3 - Highlight events
+  ///
+  /// In en, this message translates to:
+  /// **'Hot University Events\nYou Shouldn\'t Miss!'**
+  String get onboarding_title_3;
+
+  /// Title for onboarding screen 4 - Study groups
+  ///
+  /// In en, this message translates to:
+  /// **'Go Far Together with\nthe Right Study Group!'**
+  String get onboarding_title_4;
+
+  /// Title for onboarding screen 5 - Campus map feature
+  ///
+  /// In en, this message translates to:
+  /// **'No Worries if You Get Lost,\nCampus Map is Here!'**
+  String get onboarding_title_5;
+
+  /// Title for onboarding screen 6 - Announcements feature
+  ///
+  /// In en, this message translates to:
+  /// **'Never Miss Important\nAnnouncements!'**
+  String get onboarding_title_6;
+
+  /// Title for onboarding screen 7 - Offline access
+  ///
+  /// In en, this message translates to:
+  /// **'Always Ready,\nEven Offline'**
+  String get onboarding_title_7;
+
+  /// Body text for onboarding screen 1 explaining app features
+  ///
+  /// In en, this message translates to:
+  /// **'Manage university life easily in one app — schedules, events, study groups and more.'**
+  String get onboarding_body_1;
+
+  /// Body text for onboarding screen 2 about schedule management
+  ///
+  /// In en, this message translates to:
+  /// **'Manage and view your daily or session schedules with reminders before classes.'**
+  String get onboarding_body_2;
+
+  /// Body text for onboarding screen 3 about events
+  ///
+  /// In en, this message translates to:
+  /// **'Discover fun events held within the university. Follow and join events you shouldn\'t miss for a complete university experience.'**
+  String get onboarding_body_3;
+
+  /// Body text for onboarding screen 4 about study groups
+  ///
+  /// In en, this message translates to:
+  /// **'No more studying alone! Find or create study groups to chat and prepare for exams with friends in your faculty or course.'**
+  String get onboarding_body_4;
+
+  /// Body text for onboarding screen 5 about campus map
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t find your classroom? Don\'t worry! View interactive campus maps with walking paths, important buildings, and useful location info.'**
+  String get onboarding_body_5;
+
+  /// Body text for onboarding screen 6 about announcements
+  ///
+  /// In en, this message translates to:
+  /// **'Get real-time news and announcements with notifications to never miss the most important university updates.'**
+  String get onboarding_body_6;
+
+  /// Body text for onboarding screen 7 about offline access
+  ///
+  /// In en, this message translates to:
+  /// **'Schedules, announcements, or maps — download and view them anytime, even without internet. The app keeps your important info accessible.'**
+  String get onboarding_body_7;
 }
 
 class _AppLocalizationsDelegate

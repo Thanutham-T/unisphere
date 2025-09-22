@@ -4,28 +4,104 @@
   "@app_title": {
     "description": "Shown on top of the screen."
   },
-  "home_menu": "หน้าแรก",
-  "@home_menu": {
-    "description": "Home menu item"
+
+  "menu_home": "หน้าแรก",
+  "@menu_home": {
+    "description": "Label for the home menu item"
   },
-  "schedule_menu": "ตารางเรียน",
-  "@schedule_menu": {
-    "description": "Schedule menu item"
+  "menu_schedule": "ตารางเรียน",
+  "@menu_schedule": {
+    "description": "Label for the schedule menu item"
   },
-  "events_menu": "กิจกรรม",
-  "@events_menu": {
-    "description": "Event menu item"
+  "menu_event": "กิจกรรม",
+  "@menu_event": {
+    "description": "Label for the events menu item"
   },
-  "groups_menu": "กลุ่ม",
-  "@groups_menu": {
-    "description": "Group menu item"
+  "menu_group": "กลุ่ม",
+  "@menu_group": {
+    "description": "Label for the groups menu item"
   },
-  "announce_menu": "ประกาศ",
-  "@announce_menu": {
-    "description": "announce menu item"
+  "menu_announce": "ประกาศ",
+  "@menu_announce": {
+    "description": "Label for the announcement menu item"
   },
-  "profile_menu": "ฉัน",
-  "@profile_menu": {
-    "description": "Profile menu item"
+  "menu_profile": "ฉัน",
+  "@menu_profile": {
+    "description": "Label for the profile menu item"
+  },
+
+  "onboarding_button_default": "ปุ่มกด",
+  "@onboarding_button_default": {
+    "description": "Label for default button on onboarding screens"
+  },
+  "onboarding_button_next": "ถัดไป",
+  "@onboarding_button_next": {
+    "description": "Label for the next button on onboarding screens"
+  },
+  "onboarding_button_skip": "ข้าม",
+  "@onboarding_button_skip": {
+    "description": "Label for the skip button on onboarding screens"
+  },
+  "onboarding_button_done": "เริ่มต้นเลย",
+  "@onboarding_button_done": {
+    "description": "Label for the done button to finish onboarding"
+  },
+
+  "onboarding_title_1": "ยินดีต้อนรับสู่ UNISPHERE.",
+  "@onboarding_title_1": {
+    "description": "Title for onboarding screen 1 - Welcome message"
+  },
+  "onboarding_title_2": "พก Schedule ไปกับคุณ\nทุกที่ ทุกเวลา",
+  "@onboarding_title_2": {
+    "description": "Title for onboarding screen 2 - Carry schedule anywhere"
+  },
+  "onboarding_title_3": "Event เด็ด เด็กมหาลัย\nไม่ควรพลาด !",
+  "@onboarding_title_3": {
+    "description": "Title for onboarding screen 3 - Highlight events"
+  },
+  "onboarding_title_4": "ไปด้วยกันไปได้ไกล กับ\nStudy Group ที่ใช่ !",
+  "@onboarding_title_4": {
+    "description": "Title for onboarding screen 4 - Study groups"
+  },
+  "onboarding_title_5": "หลงก็ไม่กลัว เพราะมี\nCampus Map อยู่ข้าง ๆ",
+  "@onboarding_title_5": {
+    "description": "Title for onboarding screen 5 - Campus map feature"
+  },
+  "onboarding_title_6": "ไม่พลาดทุก Announce\nที่สำคัญ !",
+  "@onboarding_title_6": {
+    "description": "Title for onboarding screen 6 - Announcements feature"
+  },
+  "onboarding_title_7": "พร้อมทุกเวลา\nแม้อยู่นอกเครือข่าย",
+  "@onboarding_title_7": {
+    "description": "Title for onboarding screen 7 - Offline access"
+  },
+
+  "onboarding_body_1": "จัดการชีวิตในมหาวิทยาลัยได้ง่ายขึ้นในแอปเดียว\nตารางเรียน, กิจกรรม, กลุ่มเรียน และอื่นๆ",
+  "@onboarding_body_1": {
+    "description": "Body text for onboarding screen 1 explaining app features"
+  },
+  "onboarding_body_2": "จัดการ และดูตารางเรียนรายวัน หรือราย session\nพร้อมแจ้งเตือนก่อนเข้าเรียน",
+  "@onboarding_body_2": {
+    "description": "Body text for onboarding screen 2 about schedule management"
+  },
+  "onboarding_body_3": "พบกับกิจกรรมสนุก ๆ ที่จัดขึ้นภายในมหาวิทยาลัย\nติดตาม และเข้าร่วมกิจกรรมที่คุณไม่ควรพลาด\nเพื่อประสบการณ์มหาลัยที่สมบูรณ์แบบ",
+  "@onboarding_body_3": {
+    "description": "Body text for onboarding screen 3 about events"
+  },
+  "onboarding_body_4": "ไม่ต้องเรียนคนเดียวอีกต่อไป!\nค้นหา หรือสร้างกลุ่มติว พูดคุย และเตรียมสอบไปพร้อมกับเพื่อนในคณะ หรือวิชาเดียวกัน",
+  "@onboarding_body_4": {
+    "description": "Body text for onboarding screen 4 about study groups"
+  },
+  "onboarding_body_5": "หาตึกเรียนไม่เจอ? ไม่ต้องกังวล ! ดูแผนที่มหาวิทยาลัยพร้อมเส้นทางเดิน อาคารสำคัญ และข้อมูลสถานที่ใช้งานได้ทันที",
+  "@onboarding_body_5": {
+    "description": "Body text for onboarding screen 5 about campus map"
+  },
+  "onboarding_body_6": "รับข่าวสาร และประกาศแบบเรียลไทม์\nพร้อมระบบแจ้งเตือนให้คุณไม่พลาดสิ่งที่สำคัญที่สุดในชีวิตมหาลัย",
+  "@onboarding_body_6": {
+    "description": "Body text for onboarding screen 6 about announcements"
+  },
+  "onboarding_body_7": "ตารางเรียน ประกาศ หรือแผนที่\nดาวน์โหลดไว้ดูได้ทุกที่ แม้ไม่มีอินเทอร์เน็ต\nแอปพร้อมให้คุณเข้าถึงข้อมูลสำคัญเสมอ",
+  "@onboarding_body_7": {
+    "description": "Body text for onboarding screen 7 about offline access"
   }
 }

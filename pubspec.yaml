@@ -27,6 +27,8 @@ dependencies:
   equatable: ^2.0.7
   flutter_native_splash: ^2.4.6
   splash_master: ^0.0.3
+  smooth_page_indicator: ^1.2.1
+  lottie: ^3.3.2
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +58,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/animations/
+    - assets/animations/lotties/
 
 flutter_launcher_icons:
   image_path: "assets/icons/unisphere_icon.png"

@@ -47,7 +47,7 @@
     "description": "Label for the done button to finish onboarding"
   },
 
-  "onboarding_title_1": "Welcome to UNISPHERE.",
+  "onboarding_title_1": "Welcome to UNISPHERE",
   "@onboarding_title_1": {
     "description": "Title for onboarding screen 1 - Welcome message"
   },
@@ -63,7 +63,7 @@
   "@onboarding_title_4": {
     "description": "Title for onboarding screen 4 - Study groups"
   },
-  "onboarding_title_5": "No Worries if You Get Lost,\nCampus Map is Here!",
+  "onboarding_title_5": "No Worries if You Lost,\nCampus Map is Here!",
   "@onboarding_title_5": {
     "description": "Title for onboarding screen 5 - Campus map feature"
   },
@@ -76,7 +76,7 @@
     "description": "Title for onboarding screen 7 - Offline access"
   },
 
-  "onboarding_body_1": "Manage university life easily in one app — schedules, events, study groups and more.",
+  "onboarding_body_1": "Manage university life easily in one app\nschedules, events, study groups and more.",
   "@onboarding_body_1": {
     "description": "Body text for onboarding screen 1 explaining app features"
   },
@@ -84,15 +84,15 @@
   "@onboarding_body_2": {
     "description": "Body text for onboarding screen 2 about schedule management"
   },
-  "onboarding_body_3": "Discover fun events held within the university. Follow and join events you shouldn't miss for a complete university experience.",
+  "onboarding_body_3": "Discover fun campus events and join must-attend activities for the full university experience.",
   "@onboarding_body_3": {
     "description": "Body text for onboarding screen 3 about events"
   },
-  "onboarding_body_4": "No more studying alone! Find or create study groups to chat and prepare for exams with friends in your faculty or course.",
+  "onboarding_body_4": "Study together! Join or start groups to chat and prep with classmates from your course or faculty.",
   "@onboarding_body_4": {
     "description": "Body text for onboarding screen 4 about study groups"
   },
-  "onboarding_body_5": "Can't find your classroom? Don't worry! View interactive campus maps with walking paths, important buildings, and useful location info.",
+  "onboarding_body_5": "Lost on campus? Use interactive maps with paths, key buildings, and location info.",
   "@onboarding_body_5": {
     "description": "Body text for onboarding screen 5 about campus map"
   },
@@ -100,7 +100,7 @@
   "@onboarding_body_6": {
     "description": "Body text for onboarding screen 6 about announcements"
   },
-  "onboarding_body_7": "Schedules, announcements, or maps — download and view them anytime, even without internet. The app keeps your important info accessible.",
+  "onboarding_body_7": "Download schedules, announcements or maps and access them anytime even offline.",
   "@onboarding_body_7": {
     "description": "Body text for onboarding screen 7 about offline access"
   }

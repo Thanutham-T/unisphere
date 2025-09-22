@@ -167,7 +167,7 @@ abstract class AppLocalizations {
   /// Title for onboarding screen 1 - Welcome message
   ///
   /// In en, this message translates to:
-  /// **'Welcome to UNISPHERE.'**
+  /// **'Welcome to UNISPHERE'**
   String get onboarding_title_1;
 
   /// Title for onboarding screen 2 - Carry schedule anywhere
@@ -191,7 +191,7 @@ abstract class AppLocalizations {
   /// Title for onboarding screen 5 - Campus map feature
   ///
   /// In en, this message translates to:
-  /// **'No Worries if You Get Lost,\nCampus Map is Here!'**
+  /// **'No Worries if You Lost,\nCampus Map is Here!'**
   String get onboarding_title_5;
 
   /// Title for onboarding screen 6 - Announcements feature
@@ -209,7 +209,7 @@ abstract class AppLocalizations {
   /// Body text for onboarding screen 1 explaining app features
   ///
   /// In en, this message translates to:
-  /// **'Manage university life easily in one app — schedules, events, study groups and more.'**
+  /// **'Manage university life easily in one app\nschedules, events, study groups and more.'**
   String get onboarding_body_1;
 
   /// Body text for onboarding screen 2 about schedule management
@@ -221,19 +221,19 @@ abstract class AppLocalizations {
   /// Body text for onboarding screen 3 about events
   ///
   /// In en, this message translates to:
-  /// **'Discover fun events held within the university. Follow and join events you shouldn\'t miss for a complete university experience.'**
+  /// **'Discover fun campus events and join must-attend activities for the full university experience.'**
   String get onboarding_body_3;
 
   /// Body text for onboarding screen 4 about study groups
   ///
   /// In en, this message translates to:
-  /// **'No more studying alone! Find or create study groups to chat and prepare for exams with friends in your faculty or course.'**
+  /// **'Study together! Join or start groups to chat and prep with classmates from your course or faculty.'**
   String get onboarding_body_4;
 
   /// Body text for onboarding screen 5 about campus map
   ///
   /// In en, this message translates to:
-  /// **'Can\'t find your classroom? Don\'t worry! View interactive campus maps with walking paths, important buildings, and useful location info.'**
+  /// **'Lost on campus? Use interactive maps with paths, key buildings, and location info.'**
   String get onboarding_body_5;
 
   /// Body text for onboarding screen 6 about announcements
@@ -245,7 +245,7 @@ abstract class AppLocalizations {
   /// Body text for onboarding screen 7 about offline access
   ///
   /// In en, this message translates to:
-  /// **'Schedules, announcements, or maps — download and view them anytime, even without internet. The app keeps your important info accessible.'**
+  /// **'Download schedules, announcements or maps and access them anytime even offline.'**
   String get onboarding_body_7;
 }
 

@@ -45,7 +45,7 @@ class CustomPageView extends StatelessWidget {
             bodyParam,
             style: const TextStyle(
               fontSize: 16,
-              color: Colors.black54,
+              color: Colors.black38,
             ),
             textAlign: TextAlign.center,
           ),

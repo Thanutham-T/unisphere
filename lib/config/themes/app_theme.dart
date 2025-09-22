@@ -39,6 +39,14 @@ class AppTheme {
           color: AppColors.black,
         ),
       ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          textStyle: GoogleFonts.notoSansThai(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.black,
@@ -92,6 +100,14 @@ class AppTheme {
         bodyMedium: GoogleFonts.notoSansThai(
           fontSize: 16,
           color: AppColors.white,
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          textStyle: GoogleFonts.notoSansThai(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(

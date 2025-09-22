@@ -158,7 +158,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
 
             // Bottom Buttons (Skip and Next/Done)
             Padding(
@@ -185,7 +185,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     nameButton: _currentPage == pages.length - 1
                         ? localizations.onboarding_button_done
                         : localizations.onboarding_button_next,
-                    smallPadding: _currentPage == pages.length - 1,
                     onTap: _nextPage,
                   ),
                 ],

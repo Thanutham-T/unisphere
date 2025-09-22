@@ -42,7 +42,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboarding_button_done => 'Get Started';
 
   @override
-  String get onboarding_title_1 => 'Welcome to UNISPHERE.';
+  String get onboarding_title_1 => 'Welcome to UNISPHERE';
 
   @override
   String get onboarding_title_2 => 'Carry your Schedule\nAnywhere, Anytime';
@@ -57,7 +57,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboarding_title_5 =>
-      'No Worries if You Get Lost,\nCampus Map is Here!';
+      'No Worries if You Lost,\nCampus Map is Here!';
 
   @override
   String get onboarding_title_6 => 'Never Miss Important\nAnnouncements!';
@@ -67,7 +67,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboarding_body_1 =>
-      'Manage university life easily in one app — schedules, events, study groups and more.';
+      'Manage university life easily in one app\nschedules, events, study groups and more.';
 
   @override
   String get onboarding_body_2 =>
@@ -75,15 +75,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboarding_body_3 =>
-      'Discover fun events held within the university. Follow and join events you shouldn\'t miss for a complete university experience.';
+      'Discover fun campus events and join must-attend activities for the full university experience.';
 
   @override
   String get onboarding_body_4 =>
-      'No more studying alone! Find or create study groups to chat and prepare for exams with friends in your faculty or course.';
+      'Study together! Join or start groups to chat and prep with classmates from your course or faculty.';
 
   @override
   String get onboarding_body_5 =>
-      'Can\'t find your classroom? Don\'t worry! View interactive campus maps with walking paths, important buildings, and useful location info.';
+      'Lost on campus? Use interactive maps with paths, key buildings, and location info.';
 
   @override
   String get onboarding_body_6 =>
@@ -91,5 +91,5 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboarding_body_7 =>
-      'Schedules, announcements, or maps — download and view them anytime, even without internet. The app keeps your important info accessible.';
+      'Download schedules, announcements or maps and access them anytime even offline.';
 }

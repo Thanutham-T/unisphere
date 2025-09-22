@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:introduction_screen/introduction_screen.dart';
+import 'dart:async';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import 'package:unisphere/config/routes/app_router.dart';
@@ -10,27 +10,77 @@ import 'package:unisphere/l10n/app_localizations.dart';
 
 import '../widgets/custom_onboard_button.dart';
 import '../widgets/custom_page_view.dart';
-import '../bloc/page_index_cubit.dart';
 
-class FixedPageController extends PageController {
-  final int pageIndex;
 
-  FixedPageController(this.pageIndex);
-
-  @override
-  double get page => pageIndex.toDouble();
-}
-
-class OnboardingScreen extends StatelessWidget {
+class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    context.read<FullscreenCubit>().enterFullscreen();
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  late final PageController _pageController;
+  Timer? _autoScrollTimer;
+  int _currentPage = 0;
+
+  void _startAutoScroll() {
+    final pages = _pages;
+    _autoScrollTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (_currentPage < pages.length - 1) {
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      } else {
+        _pageController.animateToPage(
+          0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<FullscreenCubit>().enterFullscreen();
+      _startAutoScroll();
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _autoScrollTimer?.cancel();
+    super.dispose();
+  }
+
+  void _goToDashboard() {
+    context.read<FullscreenCubit>().exitFullscreen();
+    DashboardRoute().go(context);
+  }
+
+  void _nextPage() {
+    final pages = _pages;
+    if (_currentPage < pages.length - 1) {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      _goToDashboard();
+    }
+  }
+
+  List<Widget> get _pages {
     final localizations = AppLocalizations.of(context)!;
     final assets = Assets.animations.lotties;
 
-    final List<CustomPageView> pages = [
+    return [
       CustomPageView(
         assetPath: assets.logoAnimation.path,
         titleParam: localizations.onboarding_title_1,
@@ -42,97 +92,110 @@ class OnboardingScreen extends StatelessWidget {
         bodyParam: '"${localizations.onboarding_body_2}"',
       ),
       CustomPageView(
-        assetPath: assets.scheduleAnimation.path,
+        assetPath: assets.eventAnimation.path,
         titleParam: localizations.onboarding_title_3,
         bodyParam: '"${localizations.onboarding_body_3}"',
       ),
       CustomPageView(
-        assetPath: assets.scheduleAnimation.path,
+        assetPath: assets.groupAnmation.path,
         titleParam: localizations.onboarding_title_4,
         bodyParam: '"${localizations.onboarding_body_4}"',
       ),
       CustomPageView(
-        assetPath: assets.scheduleAnimation.path,
+        assetPath: assets.mapAnimation.path,
         titleParam: localizations.onboarding_title_5,
         bodyParam: '"${localizations.onboarding_body_5}"',
       ),
       CustomPageView(
-        assetPath: assets.scheduleAnimation.path,
+        assetPath: assets.annouceAnimation.path,
         titleParam: localizations.onboarding_title_6,
         bodyParam: '"${localizations.onboarding_body_6}"',
       ),
       CustomPageView(
-        assetPath: assets.scheduleAnimation.path,
+        assetPath: assets.offlineAnimation.path,
         titleParam: localizations.onboarding_title_7,
         bodyParam: '"${localizations.onboarding_body_7}"',
       ),
     ];
+  }
 
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        Center(
-          child: IntroductionScreen(
-            bodyPadding: EdgeInsets.only(top: 100),
-            globalBackgroundColor: Colors.white,
-            allowImplicitScrolling: true,
-            autoScrollDuration: 3000,
-            infiniteAutoScroll: true,
-            showSkipButton: true,
-            next: CustomOnboardButton(
-              nameButton: localizations.onboarding_button_next,
-            ),
-            skip: Text(
-              localizations.onboarding_button_skip,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.grey,
+  @override
+  Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+    final pages = _pages;
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // PageView inside Expanded to take available space
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: pages.length,
+                onPageChanged: (index) {
+                  setState(() => _currentPage = index);
+                  _autoScrollTimer?.cancel();
+                  _startAutoScroll();
+                },
+                itemBuilder: (context, index) => pages[index],
               ),
             ),
-            done: CustomOnboardButton(
-              nameButton: localizations.onboarding_button_done,
-              smallPadding: true,
-            ),
-            onDone: () {
-              DashboardRoute().go(context);
-              context.read<FullscreenCubit>().exitFullscreen();
-            },
-            onSkip: () {
-              DashboardRoute().go(context);
-              context.read<FullscreenCubit>().exitFullscreen();
-            },
-            onChange: (index) {
-              context.read<PageIndexCubit>().updatePage(index);
-            },
-            pages: pages,
-            dotsDecorator: const DotsDecorator(
-              activeColor: Colors.transparent,
-              color: Colors.transparent,
-              size: Size.zero,
-              activeSize: Size.zero,
-            ),
-          ),
-        ),
 
-        Positioned(
-          bottom: 100,
-          child: BlocBuilder<PageIndexCubit, int>(
-            builder: (context, currentPageIndex) {
-              return SmoothPageIndicator(
-                count: pages.length,
-                effect: const ExpandingDotsEffect(
-                  dotHeight: 8,
-                  dotWidth: 8,
-                  spacing: 8,
-                  activeDotColor: Colors.black,
-                  dotColor: Colors.grey,
-                ),
-                controller: FixedPageController(currentPageIndex),
-              );
-            },
-          ),
+            const SizedBox(height: 20),
+
+            // Smooth Page Indicator
+            SmoothPageIndicator(
+              controller: _pageController,
+              count: pages.length,
+              effect: const ExpandingDotsEffect(
+                dotHeight: 8,
+                dotWidth: 8,
+                spacing: 8,
+                activeDotColor: Colors.black,
+                dotColor: Colors.grey,
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Bottom Buttons (Skip and Next/Done)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Skip Button
+                  if (_currentPage != pages.length - 1)
+                    TextButton(
+                      onPressed: _goToDashboard,
+                      child: Text(
+                        localizations.onboarding_button_skip,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    )
+                  else
+                    const SizedBox(),
+                  // Next/Done Button
+                  CustomOnboardButton(
+                    nameButton: _currentPage == pages.length - 1
+                        ? localizations.onboarding_button_done
+                        : localizations.onboarding_button_next,
+                    smallPadding: _currentPage == pages.length - 1,
+                    onTap: _nextPage,
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

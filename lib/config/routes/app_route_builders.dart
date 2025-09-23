@@ -6,6 +6,7 @@ import '../../core/cubits/fullscreen_cubit.dart';
 
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
+
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/course/presentation/screens/course_screen.dart';
@@ -29,7 +30,10 @@ class RouteBuilders {
   }
 
   static Widget buildOnboardingScreen() {
-    return const OnboardingScreen();
+    return BlocProvider(
+      create: (_) => FullscreenCubit(),
+      child: const OnboardingScreen(),
+    );
   }
 
   static Widget buildDashboardScreen() {

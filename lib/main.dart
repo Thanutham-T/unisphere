@@ -9,6 +9,7 @@ import 'package:unisphere/config/routes/app_router.dart';
 import 'package:unisphere/config/themes/app_theme.dart';
 import 'package:unisphere/core/services/key_value_storage_service.dart';
 import 'package:unisphere/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:unisphere/core/cubits/theme_cubit.dart';
 import 'package:unisphere/injector.dart' as di;
 import 'package:unisphere/l10n/app_localizations.dart';
 
@@ -39,25 +40,33 @@ class MyApp extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
+          // AuthBloc จาก branch Atom
           BlocProvider<AuthBloc>(
             create: (context) => di.getIt<AuthBloc>(),
           ),
+          // ThemeCubit จาก development
+          BlocProvider<ThemeCubit>(
+            create: (_) => ThemeCubit(di.getIt.get<KeyValueStorageService>()),
+          ),
         ],
-        child: MaterialApp.router(
-          title: 'Unisphere',
-          theme: AppTheme.lightTheme,
-          routerConfig: appRouter,
-          localizationsDelegates: [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: [
-            Locale('th'),
-            Locale('en'), 
-          ],
-          locale: Locale('en'),
+        child: BlocBuilder<ThemeCubit, ThemeMode>(
+          builder: (context, state) {
+            return MaterialApp.router(
+              title: 'Unisphere',
+              themeMode: state,
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              routerConfig: appRouter,
+              localizationsDelegates: [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: const [Locale('th'), Locale('en')],
+              locale: const Locale('en'),
+            );
+          },
         ),
       ),
     );

@@ -18,7 +18,7 @@ class CampusMapScreen extends StatelessWidget {
   static final ValueNotifier<String> _searchQuery = ValueNotifier('');
   
   // Default campus center (adjust to your campus coordinates)
-  static const LatLng _campusCenter = LatLng(14.8816, 102.0144);
+  static const LatLng _campusCenter = LatLng(7.0069451, 100.5007147);
 
   // Mock data for places in warehouse/storage with icons
   static const List<Map<String, dynamic>> _warehousePlaces = [

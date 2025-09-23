@@ -12,6 +12,7 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       brightness: Brightness.light,
+      primaryColor: Colors.white,
       scaffoldBackgroundColor: AppColors.white,
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.black,
@@ -80,6 +81,7 @@ class AppTheme {
   static ThemeData get darkTheme {
     return ThemeData(
       brightness: Brightness.dark,
+      primaryColor: Colors.black,
       scaffoldBackgroundColor: AppColors.darkBackground,
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.darkCard,
@@ -93,7 +95,12 @@ class AppTheme {
       ),
       textTheme: TextTheme(
         titleLarge: GoogleFonts.notoSansThai(
-          fontSize: 22,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: AppColors.white,
+        ),
+        titleSmall: GoogleFonts.notoSansThai(
+          fontSize: 16,
           fontWeight: FontWeight.bold,
           color: AppColors.white,
         ),

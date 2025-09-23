@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
+
 class CustomPageView extends StatelessWidget {
   final String assetPath;
   final String titleParam;
@@ -35,6 +36,7 @@ class CustomPageView extends StatelessWidget {
           Text(
             titleParam,
             style: const TextStyle(
+              color: Colors.black,
               fontSize: 28,
               fontWeight: FontWeight.w700,
             ),

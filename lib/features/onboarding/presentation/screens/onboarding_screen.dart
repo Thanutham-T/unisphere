@@ -47,7 +47,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.initState();
     _pageController = PageController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<FullscreenCubit>().enterFullscreen();
       _startAutoScroll();
     });
   }

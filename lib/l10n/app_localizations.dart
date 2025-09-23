@@ -139,6 +139,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Me'**
   String get profile_menu;
+
+  /// Search hint text in campus map
+  ///
+  /// In en, this message translates to:
+  /// **'Search in campus'**
+  String get map_search_hint;
+
+  /// Route calculating message
+  ///
+  /// In en, this message translates to:
+  /// **'Calculating route...'**
+  String get map_calculating_route;
+
+  /// Location permission dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Location Permission'**
+  String get map_location_permission_title;
+
+  /// Location permission dialog message
+  ///
+  /// In en, this message translates to:
+  /// **'The app needs location permission to show your current position on the map'**
+  String get map_location_permission_message;
+
+  /// Close button
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// Try again button
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get try_again;
 }
 
 class _AppLocalizationsDelegate

@@ -28,4 +28,23 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get profile_menu => 'ฉัน';
+
+  @override
+  String get map_search_hint => 'ค้นหาในแคมปัส';
+
+  @override
+  String get map_calculating_route => 'กำลังคำนวณเส้นทาง...';
+
+  @override
+  String get map_location_permission_title => 'การอนุญาตตำแหน่ง';
+
+  @override
+  String get map_location_permission_message =>
+      'แอปต้องการการอนุญาตในการเข้าถึงตำแหน่งของคุณเพื่อแสดงตำแหน่งปัจจุบันบนแผนที่';
+
+  @override
+  String get close => 'ปิด';
+
+  @override
+  String get try_again => 'ลองอีกครั้ง';
 }

@@ -27,5 +27,29 @@
   "profile_menu": "Me",
   "@profile_menu": {
     "description": "Profile menu item"
+  },
+  "map_search_hint": "Search in campus",
+  "@map_search_hint": {
+    "description": "Search hint text in campus map"
+  },
+  "map_calculating_route": "Calculating route...",
+  "@map_calculating_route": {
+    "description": "Route calculating message"
+  },
+  "map_location_permission_title": "Location Permission",
+  "@map_location_permission_title": {
+    "description": "Location permission dialog title"
+  },
+  "map_location_permission_message": "The app needs location permission to show your current position on the map",
+  "@map_location_permission_message": {
+    "description": "Location permission dialog message"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Close button"
+  },
+  "try_again": "Try Again",
+  "@try_again": {
+    "description": "Try again button"
   }
 }

@@ -3,23 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/map_bloc.dart';
 import '../bloc/map_event.dart';
 
-class MapSearchBar extends StatefulWidget {
+class MapSearchBar extends StatelessWidget {
   const MapSearchBar({super.key});
 
-  @override
-  State<MapSearchBar> createState() => _MapSearchBarState();
-}
-
-class _MapSearchBarState extends State<MapSearchBar> {
-  final TextEditingController _searchController = TextEditingController();
-  final FocusNode _focusNode = FocusNode();
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    _focusNode.dispose();
-    super.dispose();
-  }
+  static final TextEditingController _searchController = TextEditingController();
+  static final FocusNode _focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -65,19 +53,26 @@ class _MapSearchBarState extends State<MapSearchBar> {
               },
             ),
           ),
-          if (_searchController.text.isNotEmpty)
-            GestureDetector(
-              onTap: () {
-                _searchController.clear();
-                context.read<MapBloc>().add(const SearchPlaces(''));
-                _focusNode.unfocus();
-              },
-              child: const Icon(
-                Icons.clear,
-                color: Colors.grey,
-                size: 20,
-              ),
-            ),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _searchController,
+            builder: (context, value, child) {
+              if (value.text.isNotEmpty) {
+                return GestureDetector(
+                  onTap: () {
+                    _searchController.clear();
+                    context.read<MapBloc>().add(const SearchPlaces(''));
+                    _focusNode.unfocus();
+                  },
+                  child: const Icon(
+                    Icons.clear,
+                    color: Colors.grey,
+                    size: 20,
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
           const SizedBox(width: 8),
           GestureDetector(
             onTap: () {

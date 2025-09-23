@@ -1,28 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../injector.dart';
+import '../bloc/map_bloc.dart';
+import '../pages/campus_map_screen.dart';
 
 class MapScreen extends StatelessWidget {
   const MapScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Map'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            context.pop();
-          },
-        ),
-      ),
-      body: Center(
-        child: Text(
-          'Map',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      ),
+    return BlocProvider(
+      create: (context) => getIt<MapBloc>(),
+      child: const CampusMapScreen(),
     );
   }
 }

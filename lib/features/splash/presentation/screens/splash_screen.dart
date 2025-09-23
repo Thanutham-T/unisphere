@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:unisphere/core/cubits/fullscreen_cubit.dart';
 import 'package:unisphere/core/services/key_value_storage_service.dart';
 import 'package:unisphere/injector.dart' as di;
+
 import 'package:unisphere/gen/assets.gen.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -35,7 +36,17 @@ class SplashScreen extends StatelessWidget {
       source: AssetSource(Assets.animations.splashAnimation),
       backGroundColor: Colors.white,
       videoConfig: VideoConfig(videoVisibilityEnum: VisibilityEnum.none),
-      customNavigation: () => _handleNavigation(context),
+      customNavigation: () async {
+        // รวม logic ทั้งสอง: onboarding check + auth check
+        if (context.read<KeyValueStorageService>().isFirstTimeOnboarding()) {
+          context.read<KeyValueStorageService>().setFirstTimeOnboarding(false);
+          context.read<FullscreenCubit>().exitFullscreen();
+          context.go('/onboarding');
+        } else {
+          // ใช้ _handleNavigation เพื่อ check authentication
+          await _handleNavigation(context);
+        }
+      },
     );
   }
 }

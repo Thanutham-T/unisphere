@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:unisphere/core/cubits/theme_cubit.dart';
-
+import 'package:unisphere/core/cubits/app_settings_cubit.dart';
+import 'package:unisphere/core/cubits/app_settings_state.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -29,29 +29,51 @@ class SettingScreen extends StatelessWidget {
               'Theme',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            BlocBuilder<ThemeCubit, ThemeMode>(
-              builder: (context, selectedTheme) {
-                return DropdownButton<ThemeMode>(
-                  value: selectedTheme,
-                  items: const [
-                    DropdownMenuItem(
-                      value: ThemeMode.system,
-                      child: Text('System'),
+            BlocBuilder<AppSettingsCubit, AppSettingsState>(
+              builder: (context, state) {
+                return Column(
+                  children: [
+                    DropdownButton<ThemeMode>(
+                      value: state.themeMode,
+                      items: const [
+                        DropdownMenuItem(
+                          value: ThemeMode.system,
+                          child: Text('System'),
+                        ),
+                        DropdownMenuItem(
+                          value: ThemeMode.light,
+                          child: Text('Light'),
+                        ),
+                        DropdownMenuItem(
+                          value: ThemeMode.dark,
+                          child: Text('Dark'),
+                        ),
+                      ],
+                      onChanged: (ThemeMode? value) {
+                        if (value != null) {
+                          context.read<AppSettingsCubit>().setThemeMode(value);
+                        }
+                      },
                     ),
-                    DropdownMenuItem(
-                      value: ThemeMode.light,
-                      child: Text('Light'),
-                    ),
-                    DropdownMenuItem(
-                      value: ThemeMode.dark,
-                      child: Text('Dark'),
+                    DropdownButton<Locale>(
+                      value: state.locale,
+                      items: const [
+                        DropdownMenuItem(
+                          value: Locale('en', 'US'),
+                          child: Text('English'),
+                        ),
+                        DropdownMenuItem(
+                          value: Locale('th', 'TH'),
+                          child: Text('ไทย'),
+                        ),
+                      ],
+                      onChanged: (Locale? value) {
+                        if (value != null) {
+                          context.read<AppSettingsCubit>().setLocale(value);
+                        }
+                      },
                     ),
                   ],
-                  onChanged: (ThemeMode? value) {
-                    if (value != null) {
-                      context.read<ThemeCubit>().setThemeMode(value);
-                    }
-                  },
                 );
               },
             ),

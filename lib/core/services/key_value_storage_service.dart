@@ -28,7 +28,6 @@ class KeyValueStorageService {
     _keyValueStorage.removeCommon(_isFirstTimeOnboardingAccessKey);
   }
 
-<<<<<<< HEAD
   /// Generic methods for string storage
   Future<void> setString(String key, String value) async {
     _keyValueStorage.setCommon<String>(key, value);
@@ -51,7 +50,6 @@ class KeyValueStorageService {
     await remove('token_type');
   }
 
-=======
 
   /// Theme setting
   /// The name of the theme setting
@@ -66,7 +64,6 @@ class KeyValueStorageService {
   void setThemeMode(ThemeMode mode) {
     _keyValueStorage.setCommon<int>(_themeSettingKey, mode.index);
   }
->>>>>>> origin/development
   
 }
 

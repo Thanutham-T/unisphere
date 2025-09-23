@@ -16,6 +16,7 @@ import '../../features/map/presentation/screens/map_screen.dart';
 import '../../features/announcement/presentation/screens/announcement_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/setting/presentation/screens/setting_screen.dart';
 
 
@@ -64,7 +65,10 @@ class RouteBuilders {
   }
 
   static Widget buildLoginScreen() {
-    return const LoginScreen();
+    return BlocProvider(
+      create: (_) => di.getIt<AuthBloc>(),
+      child: const LoginScreen(),
+    );
   }
 
   static Widget buildRegisterScreen() {

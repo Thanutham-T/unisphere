@@ -10,3 +10,23 @@ abstract class Failure extends Equatable {
   @override
   List<Object?> get props => [message, code];
 }
+
+/// Network-related failures
+class NetworkFailure extends Failure {
+  const NetworkFailure(super.message, {super.code});
+}
+
+/// Server-related failures
+class ServerFailure extends Failure {
+  const ServerFailure(super.message, {super.code});
+}
+
+/// Authentication-related failures
+class AuthFailure extends Failure {
+  const AuthFailure(super.message, {super.code});
+}
+
+/// Validation-related failures
+class ValidationFailure extends Failure {
+  const ValidationFailure(super.message, {super.code});
+}

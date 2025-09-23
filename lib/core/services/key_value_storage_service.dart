@@ -30,6 +30,28 @@ class KeyValueStorageService {
     _keyValueStorage.removeCommon(_isFirstTimeOnboardingAccessKey);
   }
 
+  /// Generic methods for string storage
+  Future<void> setString(String key, String value) async {
+    _keyValueStorage.setCommon<String>(key, value);
+  }
+
+  Future<String?> getString(String key) async {
+    return _keyValueStorage.getCommon<String>(key);
+  }
+
+  /// Remove a key from storage
+  Future<void> remove(String key) async {
+    _keyValueStorage.removeCommon(key);
+  }
+
+  /// Clear all data from storage
+  Future<void> clear() async {
+    // Note: This would need to be implemented in KeyValueStorageBase
+    // For now, we'll remove specific auth keys
+    await remove('access_token');
+    await remove('token_type');
+  }
+
   
 }
 

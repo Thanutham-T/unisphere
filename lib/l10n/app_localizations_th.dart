@@ -110,4 +110,5 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get try_again => 'ลองอีกครั้ง';
+
 }

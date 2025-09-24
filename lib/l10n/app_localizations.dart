@@ -283,6 +283,7 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try Again'**
   String get try_again;
+
 }
 
 class _AppLocalizationsDelegate

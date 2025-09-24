@@ -4,6 +4,7 @@ import 'package:splash_master/splash_master.dart';
 
 import 'package:unisphere/config/routes/app_router.dart';
 import 'package:unisphere/core/cubits/fullscreen_cubit.dart';
+import 'package:unisphere/core/services/key_value_storage_service.dart';
 
 import 'package:unisphere/gen/assets.gen.dart';
 
@@ -20,8 +21,13 @@ class SplashScreen extends StatelessWidget {
       backGroundColor: Colors.white,
       videoConfig: VideoConfig(videoVisibilityEnum: VisibilityEnum.none),
       customNavigation: () {
-        context.read<FullscreenCubit>().exitFullscreen();
-        DashboardRoute().go(context);
+        if (context.read<KeyValueStorageService>().isFirstTimeOnboarding()) {
+          context.read<KeyValueStorageService>().setFirstTimeOnboarding(false);
+          OnboardingRoute().go(context);
+        } else {
+          context.read<FullscreenCubit>().exitFullscreen();
+          DashboardRoute().go(context);
+        }
       },
     );
   }

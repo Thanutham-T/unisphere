@@ -16,6 +16,8 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     return Container(
       decoration: BoxDecoration(
         boxShadow: [
@@ -42,32 +44,32 @@ class CustomBottomNavBar extends StatelessWidget {
           BottomNavigationBarItem(
             icon: ImageIcon(Assets.icons.home.provider(), color: Colors.grey, size: 20),
             activeIcon: ImageIcon(Assets.icons.home.provider(), color: Colors.white, size: 20),
-            label: AppLocalizations.of(context)?.home_menu,
+            label: localizations.menu_home,
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(Assets.icons.schedule.provider(), color: Colors.grey, size: 25),
             activeIcon: ImageIcon(Assets.icons.schedule.provider(), color: Colors.white, size: 25),
-            label: AppLocalizations.of(context)?.schedule_menu
+            label: localizations.menu_schedule
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(Assets.icons.event.provider(), color: Colors.grey, size: 25),
             activeIcon: ImageIcon(Assets.icons.event.provider(), color: Colors.white, size: 25),
-            label: AppLocalizations.of(context)?.schedule_menu,
+            label: localizations.menu_schedule,
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(Assets.icons.group.provider(), color: Colors.grey, size: 25),
             activeIcon: ImageIcon(Assets.icons.group.provider(), color: Colors.white, size: 25),
-            label: AppLocalizations.of(context)?.groups_menu,
+            label: localizations.menu_group
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(Assets.icons.announcement.provider(), color: Colors.grey, size: 25),
             activeIcon: ImageIcon(Assets.icons.announcement.provider(), color: Colors.white, size: 25),
-            label: AppLocalizations.of(context)?.announce_menu,
+            label: localizations.menu_announce,
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(Assets.icons.user.provider(), color: Colors.grey, size: 20),
             activeIcon: ImageIcon(Assets.icons.user.provider(), color: Colors.white, size: 20),
-            label: AppLocalizations.of(context)?.profile_menu,
+            label: localizations.menu_profile,
           ),
         ],
       ),

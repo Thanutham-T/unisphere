@@ -103,5 +103,30 @@
   "onboarding_body_7": "ตารางเรียน ประกาศ หรือแผนที่\nดาวน์โหลดไว้ดูได้ทุกที่ แม้ไม่มีอินเทอร์เน็ต\nแอปพร้อมให้คุณเข้าถึงข้อมูลสำคัญเสมอ",
   "@onboarding_body_7": {
     "description": "Body text for onboarding screen 7 about offline access"
+  },
+  "map_search_hint": "ค้นหาในแคมปัส",
+  "@map_search_hint": {
+    "description": "Search hint text in campus map"
+  },
+  "map_calculating_route": "กำลังคำนวณเส้นทาง...",
+  "@map_calculating_route": {
+    "description": "Route calculating message"
+  },
+  "map_location_permission_title": "การอนุญาตตำแหน่ง",
+  "@map_location_permission_title": {
+    "description": "Location permission dialog title"
+  },
+  "map_location_permission_message": "แอปต้องการการอนุญาตในการเข้าถึงตำแหน่งของคุณเพื่อแสดงตำแหน่งปัจจุบันบนแผนที่",
+  "@map_location_permission_message": {
+    "description": "Location permission dialog message"
+  },
+  "close": "ปิด",
+  "@close": {
+    "description": "Close button"
+  },
+  "try_again": "ลองอีกครั้ง",
+  "@try_again": {
+    "description": "Try again button"
+  
   }
 }

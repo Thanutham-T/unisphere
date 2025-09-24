@@ -92,4 +92,24 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get onboarding_body_7 =>
       'Download schedules, announcements or maps and access them anytime even offline.';
+
+  @override
+  String get map_search_hint => 'Search in campus';
+
+  @override
+  String get map_calculating_route => 'Calculating route...';
+
+  @override
+  String get map_location_permission_title => 'Location Permission';
+
+  @override
+  String get map_location_permission_message =>
+      'The app needs location permission to show your current position on the map';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get try_again => 'Try Again';
+
 }

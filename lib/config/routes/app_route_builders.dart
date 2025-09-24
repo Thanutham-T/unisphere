@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../injector.dart' as di;
 import '../../core/cubits/fullscreen_cubit.dart';
+import '../../injector.dart';
 
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
@@ -13,7 +13,8 @@ import '../../features/course/presentation/screens/course_screen.dart';
 import '../../features/schedule/presentation/screens/schedule_screen.dart';
 import '../../features/event/presentation/screens/event_screen.dart';
 import '../../features/study_group/presentation/screens/study_group_screen.dart';
-import '../../features/map/presentation/screens/map_screen.dart';
+import '../../features/map/presentation/pages/campus_map_screen.dart';
+import '../../features/map/presentation/bloc/map_bloc.dart';
 import '../../features/announcement/presentation/screens/announcement_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
@@ -61,7 +62,10 @@ class RouteBuilders {
   }
 
   static Widget buildMapScreen() {
-    return const MapScreen();
+    return BlocProvider(
+      create: (_) => getIt<MapBloc>(),
+      child: const CampusMapScreen(),
+    );
   }
 
   static Widget buildAnnouncementScreen() {

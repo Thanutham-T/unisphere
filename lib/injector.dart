@@ -3,6 +3,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:unisphere/core/services/key_value_storage_service.dart';
 import 'package:unisphere/config/dependency_injection/auth_injection.dart';
+import 'package:unisphere/features/map/map_injection.dart';
 
 final getIt = GetIt.instance;
 
@@ -13,6 +14,8 @@ Future<void> initCriticalServices() async {
   
   // Initialize auth services
   await registerAuthDependencies(getIt);
+  // Initialize map services
+  await registerMapDI(getIt);
   
   FlutterNativeSplash.remove();
 }

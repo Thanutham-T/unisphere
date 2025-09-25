@@ -52,12 +52,25 @@ class KeyValueStorageService {
     _keyValueStorage.removeCommon(key);
   }
 
+  /// Generic methods for encrypted string storage
+  Future<void> setEncryptedString(String key, String value) async {
+    await _keyValueStorage.setEncrypted(key, value);
+  }
+
+  Future<String?> getEncryptedString(String key) async {
+    return await _keyValueStorage.getEncrypted(key);
+  }
+
+  /// Remove an encrypted key from storage
+  Future<void> removeEncrypted(String key) async {
+    await _keyValueStorage.removeEncrypted(key);
+  }
+
   /// Clear all data from storage
   Future<void> clear() async {
-    // Note: This would need to be implemented in KeyValueStorageBase
-    // For now, we'll remove specific auth keys
-    await remove('access_token');
-    await remove('token_type');
+    // Clear encrypted auth tokens
+    await removeEncrypted('access_token');
+    await removeEncrypted('token_type');
   }
 
   /// Theme setting

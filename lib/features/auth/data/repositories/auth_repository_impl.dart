@@ -9,6 +9,7 @@ import '../models/register_request.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/errors/failure.dart';
 import '../../../../core/errors/exceptions.dart';
+import '../../../../core/logging/app_logger.dart';
 import '../../../../core/services/key_value_storage_service.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -27,9 +28,9 @@ class AuthRepositoryImpl implements AuthRepository {
       final response = await remoteDataSource.login(request);
       
       // Save tokens to secure storage
-      await storageService.setString(ApiConstants.accessTokenKey, response.accessToken);
-      await storageService.setString(ApiConstants.refreshTokenKey, response.refreshToken);
-      await storageService.setString(ApiConstants.tokenTypeKey, response.tokenType);
+      await storageService.setEncryptedString(ApiConstants.accessTokenKey, response.accessToken);
+      await storageService.setEncryptedString(ApiConstants.refreshTokenKey, response.refreshToken);
+      await storageService.setEncryptedString(ApiConstants.tokenTypeKey, response.tokenType);
       
       // ถ้าไม่มี user data ให้สร้าง user จาก email ที่ใช้ login
       User user;
@@ -90,16 +91,16 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, void>> logout() async {
     try {
       // Clear tokens from storage first (มีความสำคัญมากกว่า API call)
-      await storageService.remove(ApiConstants.accessTokenKey);
-      await storageService.remove(ApiConstants.refreshTokenKey);
-      await storageService.remove(ApiConstants.tokenTypeKey);
+      await storageService.removeEncrypted(ApiConstants.accessTokenKey);
+      await storageService.removeEncrypted(ApiConstants.refreshTokenKey);
+      await storageService.removeEncrypted(ApiConstants.tokenTypeKey);
       
       // พยายามเรียก logout API (ถ้าล้มเหลวก็ไม่เป็นไร)
       try {
         await remoteDataSource.logout();
-        print('✅ Logout API called successfully');
+        AppLogger.debug('✅ Logout API called successfully');
       } catch (e) {
-        print('⚠️ Logout API failed (but local logout successful): $e');
+        AppLogger.debug('⚠️ Logout API failed (but local logout successful): $e');
         // ไม่ throw error เพราะ local logout สำเร็จแล้ว
       }
       
@@ -112,7 +113,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, bool>> isLoggedIn() async {
     try {
-      final token = await storageService.getString(ApiConstants.accessTokenKey);
+      final token = await storageService.getEncryptedString(ApiConstants.accessTokenKey);
       return Right(token != null && token.isNotEmpty);
     } catch (e) {
       return Left(ServerFailure('เกิดข้อผิดพลาดในการตรวจสอบสถานะการเข้าสู่ระบบ'));
@@ -132,7 +133,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, String?>> getAccessToken() async {
     try {
-      final token = await storageService.getString(ApiConstants.accessTokenKey);
+      final token = await storageService.getEncryptedString(ApiConstants.accessTokenKey);
       return Right(token);
     } catch (e) {
       return Left(ServerFailure('เกิดข้อผิดพลาดในการดึง access token'));

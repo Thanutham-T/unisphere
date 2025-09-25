@@ -1,16 +1,19 @@
 import 'package:go_router/go_router.dart';
 
-import '../routes/app_routes.dart';
+// import '../routes/app_routes.dart';
 
 
 class Middleware {
   Future<String?> routeMiddleware(GoRouterState state) async {
     // get the route path
-    var path = state.uri.path;
+    // var path = state.uri.path;
 
     // check the route path and return boolean
-    bool isPublicPath = path == Routes.register || path == Routes.login || path == Routes.onboarding || path == Routes.splash;
+    // bool isPublicPath = path == Routes.register || path == Routes.login || path == Routes.onboarding || path == Routes.splash;
 
+    // For now, allow all routes - implement authentication logic later
+    return null;
+    
     // // get the user registered token
     // String? token = null;
 

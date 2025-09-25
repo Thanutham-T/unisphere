@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/cubits/fullscreen_cubit.dart';
-import '../../injector.dart';
+import '../../injector.dart' as di;
 
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
@@ -18,6 +18,7 @@ import '../../features/map/presentation/bloc/map_bloc.dart';
 import '../../features/announcement/presentation/screens/announcement_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/setting/presentation/screens/setting_screen.dart';
 
 
@@ -62,7 +63,7 @@ class RouteBuilders {
 
   static Widget buildMapScreen() {
     return BlocProvider(
-      create: (_) => getIt<MapBloc>(),
+      create: (_) => di.getIt<MapBloc>(),
       child: const CampusMapScreen(),
     );
   }
@@ -72,7 +73,10 @@ class RouteBuilders {
   }
 
   static Widget buildLoginScreen() {
-    return const LoginScreen();
+    return BlocProvider(
+      create: (_) => di.getIt<AuthBloc>(),
+      child: const LoginScreen(),
+    );
   }
 
   static Widget buildRegisterScreen() {

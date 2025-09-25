@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 import '../constants/api_constants.dart';
 import '../errors/exceptions.dart';
+import '../logging/app_logger.dart';
 import 'key_value_storage_service.dart';
 
 class ApiService {
@@ -25,9 +26,9 @@ class ApiService {
     final url = Uri.parse('${ApiConstants.baseUrl}$endpoint');
     
     // Debug logging
-    print('🌐 API POST Request:');
-    print('   URL: $url');
-    print('   Use Form Data: $useFormData');
+    AppLogger.debug('🌐 API POST Request:');
+    AppLogger.debug('   URL: $url');
+    AppLogger.debug('   Use Form Data: $useFormData');
     
     try {
       http.Response response;
@@ -44,8 +45,8 @@ class ApiService {
             .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value.toString())}')
             .join('&');
             
-        print('   Headers: $formHeaders');
-        print('   Form Body: $formBody');
+        AppLogger.debug('   Headers: $formHeaders');
+        AppLogger.debug('   Form Body: $formBody');
         
         response = await _client.post(
           url,
@@ -59,8 +60,8 @@ class ApiService {
           if (headers != null) ...headers,
         };
         
-        print('   Headers: $jsonHeaders');
-        print('   JSON Body: ${jsonEncode(data)}');
+        AppLogger.debug('   Headers: $jsonHeaders');
+        AppLogger.debug('   JSON Body: ${jsonEncode(data)}');
         
         response = await _client.post(
           url,
@@ -69,16 +70,16 @@ class ApiService {
         );
       }
 
-      print('📡 API Response:');
-      print('   Status Code: ${response.statusCode}');
-      print('   Response Body: ${response.body}');
+      AppLogger.debug('📡 API Response:');
+      AppLogger.debug('   Status Code: ${response.statusCode}');
+      AppLogger.debug('   Response Body: ${response.body}');
 
       return _handleResponse(response);
     } on SocketException {
-      print('❌ Network Error: ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
+      AppLogger.debug('❌ Network Error: ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
       throw NetworkException('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
     } catch (e) {
-      print('❌ API Error: $e');
+      AppLogger.debug('❌ API Error: $e');
       throw ServerException('เกิดข้อผิดพลาดในการเชื่อมต่อ: ${e.toString()}');
     }
   }
@@ -92,7 +93,7 @@ class ApiService {
     // Get access token from storage
     String? accessToken;
     if (_storageService != null) {
-      accessToken = await _storageService.getString(ApiConstants.accessTokenKey);
+      accessToken = await _storageService.getEncryptedString(ApiConstants.accessTokenKey);
     }
 
     final authHeaders = <String, String>{
@@ -127,30 +128,30 @@ class ApiService {
   }
 
   Map<String, dynamic> _handleResponse(http.Response response) {
-    print('🔍 Handling Response: ${response.statusCode}');
+    AppLogger.debug('🔍 Handling Response: ${response.statusCode}');
     
     switch (response.statusCode) {
       case 200:
       case 201:
-        print('✅ Success: ${response.statusCode}');
+        AppLogger.debug('✅ Success: ${response.statusCode}');
         return jsonDecode(response.body);
       case 400:
-        print('❌ Bad Request (400): ${response.body}');
+        AppLogger.debug('❌ Bad Request (400): ${response.body}');
         throw BadRequestException('ข้อมูลที่ส่งไม่ถูกต้อง');
       case 401:
-        print('❌ Unauthorized (401): ${response.body}');
+        AppLogger.debug('❌ Unauthorized (401): ${response.body}');
         throw UnauthorizedException('ข้อมูลการเข้าสู่ระบบไม่ถูกต้อง');
       case 403:
-        print('❌ Forbidden (403): ${response.body}');
+        AppLogger.debug('❌ Forbidden (403): ${response.body}');
         throw ForbiddenException('ไม่มีสิทธิ์เข้าถึง');
       case 404:
-        print('❌ Not Found (404): ${response.body}');
+        AppLogger.debug('❌ Not Found (404): ${response.body}');
         throw NotFoundException('ไม่พบข้อมูลที่ต้องการ');
       case 500:
-        print('❌ Server Error (500): ${response.body}');
+        AppLogger.debug('❌ Server Error (500): ${response.body}');
         throw ServerException('เซิร์ฟเวอร์เกิดข้อผิดพลาด');
       default:
-        print('❌ Unknown Error (${response.statusCode}): ${response.body}');
+        AppLogger.debug('❌ Unknown Error (${response.statusCode}): ${response.body}');
         throw ServerException('เกิดข้อผิดพลาดที่ไม่คาดคิด (${response.statusCode})');
     }
   }

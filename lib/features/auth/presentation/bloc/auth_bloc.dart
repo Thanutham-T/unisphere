@@ -5,6 +5,7 @@ import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/register_usecase.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../../../core/errors/failure.dart';
+import '../../../../core/logging/app_logger.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
@@ -28,7 +29,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     LoginRequested event,
     Emitter<AuthState> emit,
   ) async {
-    print('🔐 Login requested for email: ${event.email}');
+    AppLogger.debug('🔐 Login requested for email: ${event.email}');
     emit(const AuthLoading());
 
     final result = await loginUseCase(
@@ -37,11 +38,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     result.fold(
       (failure) {
-        print('❌ Login failed: ${failure.message}');
+        AppLogger.debug('❌ Login failed: ${failure.message}');
         emit(AuthError(message: failure.message));
       },
       (user) {
-        print('✅ Login successful for user: ${user.email}');
+        AppLogger.debug('✅ Login successful for user: ${user.email}');
         emit(AuthAuthenticated(user: user));
       },
     );

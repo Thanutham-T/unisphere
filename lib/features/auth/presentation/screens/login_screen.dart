@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -9,7 +8,9 @@ import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/auth_button.dart';
+import '../../../../config/routes/app_routes.dart';
 import '../../../../core/constants/api_constants.dart';
+import '../../../../core/logging/app_logger.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -69,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // ฟังก์ชันทดสอบ API Connection
   Future<void> _testApiConnection() async {
-    print('🧪 Testing API Connection...');
+    AppLogger.debug('🧪 Testing API Connection...');
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('กำลังทดสอบการเชื่อมต่อ API...')),
     );
@@ -78,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final client = http.Client();
       final url = Uri.parse('${ApiConstants.baseUrl}/api/v1/auth/login');
       
-      print('🌐 Testing connection to: $url');
+      AppLogger.debug('🌐 Testing connection to: $url');
       
       final testData = {
         'username': 'test@example.com', // เปลี่ยนจาก email เป็น username
@@ -92,35 +93,29 @@ class _LoginScreenState extends State<LoginScreen> {
           'Accept': 'application/json',
         },
         body: jsonEncode(testData),
-      );
+      ).timeout(const Duration(seconds: 10));
 
-      print('📡 Response Status: ${response.statusCode}');
-      print('📡 Response Body: ${response.body}');
+      AppLogger.debug('📡 Response Status: ${response.statusCode}');
+      AppLogger.debug('📡 Response Body: ${response.body}');
 
-      if (response.statusCode == 404) {
+      if (response.statusCode == 200 || response.statusCode == 422 || response.statusCode == 401) {
+        // Status codes ที่คาดหวัง (422 = validation error, 401 = unauthorized)
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('❌ API Endpoint ไม่พบ - ตรวจสอบ FastAPI server'),
-            backgroundColor: Colors.orange,
-          ),
-        );
-      } else if (response.statusCode == 422) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('✅ API ตอบสนอง - FastAPI server พร้อมใช้งาน'),
+            content: Text('✅ เชื่อมต่อ API สำเร็จ! เซิร์ฟเวอร์ทำงานปกติ'),
             backgroundColor: Colors.green,
           ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('📡 API Response: ${response.statusCode}'),
-            backgroundColor: Colors.blue,
+            content: Text('⚠️ เซิร์ฟเวอร์ตอบกลับรหัส: ${response.statusCode}'),
+            backgroundColor: Colors.orange,
           ),
         );
       }
     } catch (e) {
-      print('❌ Connection Error: $e');
+      AppLogger.debug('❌ Connection Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('❌ ไม่สามารถเชื่อมต่อ API ได้: $e'),
@@ -132,14 +127,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('🏗️ Building LoginScreen');
+    AppLogger.debug('🏗️ Building LoginScreen');
     
     return Scaffold(
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {
             // Navigate to dashboard on successful login
-            context.go('/');
+            context.goToDashboard();
           } else if (state is AuthError) {
             // Show error message
             ScaffoldMessenger.of(context).showSnackBar(
@@ -238,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Login Button
                   BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, state) {
-                      print('🔄 Building login button - State: ${state.runtimeType}');
+                      AppLogger.debug('🔄 Building login button - State: ${state.runtimeType}');
                       return Container(
                         decoration: BoxDecoration(
                           boxShadow: [
@@ -294,7 +289,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       const Text('ยังไม่มีบัญชี? '),
                       TextButton(
                         onPressed: () {
-                          context.push('/register');
+                          context.goToRegister();
                         },
                         child: const Text('สมัครสมาชิก'),
                       ),

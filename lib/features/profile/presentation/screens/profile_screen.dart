@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
+import '../../../../config/routes/app_routes.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -22,7 +22,7 @@ class ProfileScreen extends StatelessWidget {
         listener: (context, state) {
           if (state is AuthUnauthenticated) {
             // นำทางไปหน้า login เมื่อ logout สำเร็จ
-            context.go('/login');
+            context.goToLogin();
           }
           if (state is AuthError) {
             // แสดง error message

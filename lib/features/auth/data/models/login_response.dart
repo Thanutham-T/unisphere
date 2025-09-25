@@ -1,8 +1,19 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'login_response.g.dart';
+
 // Updated for FastAPI backend compatibility
+@JsonSerializable()
 class LoginResponse {
+  @JsonKey(name: 'access_token')
   final String accessToken;
+  
+  @JsonKey(name: 'refresh_token', defaultValue: '')
   final String refreshToken;
+  
+  @JsonKey(name: 'token_type', defaultValue: 'bearer')
   final String tokenType;
+  
   final UserData? user; // Optional user data
 
   const LoginResponse({
@@ -12,30 +23,30 @@ class LoginResponse {
     this.user, // ทำให้เป็น optional
   });
 
-  factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
-    accessToken: json['access_token'] as String,
-    refreshToken: json['refresh_token'] as String? ?? '',
-    tokenType: json['token_type'] as String? ?? 'bearer',
-    user: json['user'] != null 
-        ? UserData.fromJson(json['user'] as Map<String, dynamic>)
-        : null, // ถ้าไม่มี user data ให้เป็น null
-  );
+  factory LoginResponse.fromJson(Map<String, dynamic> json) => 
+      _$LoginResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-    'access_token': accessToken,
-    'refresh_token': refreshToken,
-    'token_type': tokenType,
-    if (user != null) 'user': user!.toJson(),
-  };
+  Map<String, dynamic> toJson() => _$LoginResponseToJson(this);
 }
 
+@JsonSerializable()
 class UserData {
   final String id;
   final String email;
+  
+  @JsonKey(name: 'first_name')
   final String firstName;
+  
+  @JsonKey(name: 'last_name')
   final String lastName;
+  
+  @JsonKey(name: 'profile_image')
   final String? profileImage;
+  
+  @JsonKey(name: 'created_at')
   final String createdAt;
+  
+  @JsonKey(name: 'updated_at')
   final String updatedAt;
 
   const UserData({
@@ -48,23 +59,8 @@ class UserData {
     required this.updatedAt,
   });
 
-  factory UserData.fromJson(Map<String, dynamic> json) => UserData(
-    id: json['id']?.toString() ?? '',
-    email: json['email'] as String,
-    firstName: json['first_name'] as String? ?? json['firstName'] as String? ?? '',
-    lastName: json['last_name'] as String? ?? json['lastName'] as String? ?? '',
-    profileImage: json['profile_image'] as String? ?? json['profileImage'] as String?,
-    createdAt: json['created_at'] as String? ?? json['createdAt'] as String? ?? DateTime.now().toIso8601String(),
-    updatedAt: json['updated_at'] as String? ?? json['updatedAt'] as String? ?? DateTime.now().toIso8601String(),
-  );
+  factory UserData.fromJson(Map<String, dynamic> json) => 
+      _$UserDataFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'email': email,
-    'first_name': firstName,
-    'last_name': lastName,
-    'profile_image': profileImage,
-    'created_at': createdAt,
-    'updated_at': updatedAt,
-  };
+  Map<String, dynamic> toJson() => _$UserDataToJson(this);
 }

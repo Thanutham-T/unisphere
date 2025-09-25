@@ -66,13 +66,28 @@ class MyApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            supportedLocales: const [Locale('th', 'TH'), Locale('en', 'US')],
+            supportedLocales: const [
+              Locale('en', 'US'),
+              Locale('th', 'TH'),
+            ],
             locale: state.locale,
             localeResolutionCallback: (locale, supportedLocales) {
-              if (locale != null && supportedLocales.contains(locale)) {
-                return locale;
+              // ใช้ locale จาก state ก่อน
+              if (state.locale != null) {
+                return state.locale;
               }
-              return state.locale ?? const Locale('en');
+              
+              // ถ้าไม่มี ให้ใช้ device locale ถ้า support
+              if (locale != null) {
+                for (final supportedLocale in supportedLocales) {
+                  if (supportedLocale.languageCode == locale.languageCode) {
+                    return supportedLocale;
+                  }
+                }
+              }
+              
+              // default เป็น English
+              return const Locale('en', 'US');
             },
           );
         },

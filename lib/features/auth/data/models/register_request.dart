@@ -1,7 +1,16 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'register_request.g.dart';
+
+@JsonSerializable()
 class RegisterRequest {
   final String email;
   final String password;
+  
+  @JsonKey(name: 'first_name')
   final String firstName;
+  
+  @JsonKey(name: 'last_name')
   final String lastName;
 
   const RegisterRequest({
@@ -11,10 +20,8 @@ class RegisterRequest {
     required this.lastName,
   });
 
-  Map<String, dynamic> toJson() => {
-    'email': email,
-    'password': password,
-    'first_name': firstName,
-    'last_name': lastName,
-  };
+  factory RegisterRequest.fromJson(Map<String, dynamic> json) => 
+      _$RegisterRequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RegisterRequestToJson(this);
 }

@@ -127,5 +127,54 @@
   "try_again": "Try Again",
   "@try_again": {
     "description": "Try again button"
+  },
+  
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Settings screen title"
+  },
+  "settingsTheme": "Theme",
+  "@settingsTheme": {
+    "description": "Theme settings section"
+  },
+  "settingsThemeMode": "Theme Mode",
+  "@settingsThemeMode": {
+    "description": "Theme mode dropdown label"
+  },
+  "settingsThemeSystem": "System",
+  "@settingsThemeSystem": {
+    "description": "System theme option"
+  },
+  "settingsThemeLight": "Light",
+  "@settingsThemeLight": {
+    "description": "Light theme option"
+  },
+  "settingsThemeDark": "Dark",
+  "@settingsThemeDark": {
+    "description": "Dark theme option"
+  },
+  "settingsLanguage": "Language",
+  "@settingsLanguage": {
+    "description": "Language settings section"
+  },
+  "settingsAppInfo": "App Information",
+  "@settingsAppInfo": {
+    "description": "App information section"
+  },
+  "settingsVersion": "Version: 1.0.0+1",
+  "@settingsVersion": {
+    "description": "App version info"
+  },
+  "settingsAppName": "Unisphere - Student Mobile App",
+  "@settingsAppName": {
+    "description": "App name and description"
+  },
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "English language option"
+  },
+  "languageThai": "ไทย",
+  "@languageThai": {
+    "description": "Thai language option"
   }
 }

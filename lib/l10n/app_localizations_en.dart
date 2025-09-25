@@ -111,4 +111,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get try_again => 'Try Again';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsTheme => 'Theme';
+
+  @override
+  String get settingsThemeMode => 'Theme Mode';
+
+  @override
+  String get settingsThemeSystem => 'System';
+
+  @override
+  String get settingsThemeLight => 'Light';
+
+  @override
+  String get settingsThemeDark => 'Dark';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsAppInfo => 'App Information';
+
+  @override
+  String get settingsVersion => 'Version: 1.0.0+1';
+
+  @override
+  String get settingsAppName => 'Unisphere - Student Mobile App';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get languageThai => 'ไทย';
 }

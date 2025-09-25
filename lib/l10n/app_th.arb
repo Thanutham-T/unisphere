@@ -127,6 +127,54 @@
   "try_again": "ลองอีกครั้ง",
   "@try_again": {
     "description": "Try again button"
+  },
   
+  "settingsTitle": "การตั้งค่า",
+  "@settingsTitle": {
+    "description": "Settings screen title"
+  },
+  "settingsTheme": "ธีม",
+  "@settingsTheme": {
+    "description": "Theme settings section"
+  },
+  "settingsThemeMode": "โหมดธีม",
+  "@settingsThemeMode": {
+    "description": "Theme mode dropdown label"
+  },
+  "settingsThemeSystem": "ระบบ",
+  "@settingsThemeSystem": {
+    "description": "System theme option"
+  },
+  "settingsThemeLight": "สว่าง",
+  "@settingsThemeLight": {
+    "description": "Light theme option"
+  },
+  "settingsThemeDark": "มืด",
+  "@settingsThemeDark": {
+    "description": "Dark theme option"
+  },
+  "settingsLanguage": "ภาษา",
+  "@settingsLanguage": {
+    "description": "Language settings section"
+  },
+  "settingsAppInfo": "ข้อมูลแอปพลิเคชั่น",
+  "@settingsAppInfo": {
+    "description": "App information section"
+  },
+  "settingsVersion": "เวอร์ชั่น: 1.0.0+1",
+  "@settingsVersion": {
+    "description": "App version info"
+  },
+  "settingsAppName": "Unisphere - แอปพลิเคชั่นนักศึกษา",
+  "@settingsAppName": {
+    "description": "App name and description"
+  },
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "English language option"
+  },
+  "languageThai": "ไทย",
+  "@languageThai": {
+    "description": "Thai language option"
   }
 }

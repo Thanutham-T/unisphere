@@ -283,6 +283,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try Again'**
   String get try_again;
+
+  /// Settings screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// Theme settings section
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get settingsTheme;
+
+  /// Theme mode dropdown label
+  ///
+  /// In en, this message translates to:
+  /// **'Theme Mode'**
+  String get settingsThemeMode;
+
+  /// System theme option
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get settingsThemeSystem;
+
+  /// Light theme option
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get settingsThemeLight;
+
+  /// Dark theme option
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get settingsThemeDark;
+
+  /// Language settings section
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// App information section
+  ///
+  /// In en, this message translates to:
+  /// **'App Information'**
+  String get settingsAppInfo;
+
+  /// App version info
+  ///
+  /// In en, this message translates to:
+  /// **'Version: 1.0.0+1'**
+  String get settingsVersion;
+
+  /// App name and description
+  ///
+  /// In en, this message translates to:
+  /// **'Unisphere - Student Mobile App'**
+  String get settingsAppName;
+
+  /// English language option
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// Thai language option
+  ///
+  /// In en, this message translates to:
+  /// **'ไทย'**
+  String get languageThai;
 }
 
 class _AppLocalizationsDelegate

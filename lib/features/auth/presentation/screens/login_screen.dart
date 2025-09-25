@@ -132,6 +132,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('🏗️ Building LoginScreen');
+    
     return Scaffold(
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
@@ -162,30 +164,33 @@ class _LoginScreenState extends State<LoginScreen> {
                   Column(
                     children: [
                       Container(
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(60),
-                        ),
-                        child: Icon(
-                          Icons.school,
-                          size: 60,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
+              width: 300,
+              height: 100,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.school,
+                  size: 60,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
+            ),
                       const SizedBox(height: 24),
                       Text(
-                        'Unisphere',
-                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+              'Unisphere',
+              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
                       const SizedBox(height: 8),
                       Text(
                         'เข้าสู่ระบบเพื่อเริ่มต้นการใช้งาน',
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Colors.grey[600],
+                          color: Theme.of(context).colorScheme.onBackground.withOpacity(0.6),
                         ),
                       ),
                     ],
@@ -233,10 +238,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Login Button
                   BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, state) {
-                      return AuthButton(
-                        text: 'เข้าสู่ระบบ',
-                        onPressed: state is AuthLoading ? null : _onLoginPressed,
-                        isLoading: state is AuthLoading,
+                      print('🔄 Building login button - State: ${state.runtimeType}');
+                      return Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                              spreadRadius: 1,
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: AuthButton(
+                          text: 'เข้าสู่ระบบ',
+                          onPressed: state is AuthLoading ? null : _onLoginPressed,
+                          isLoading: state is AuthLoading,
+                        ),
                       );
                     },
                   ),

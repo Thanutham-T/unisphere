@@ -24,12 +24,12 @@ class AuthButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: isSecondary 
               ? Colors.transparent 
-              : Theme.of(context).primaryColor,
+              : Theme.of(context).colorScheme.primary,
           foregroundColor: isSecondary 
-              ? Theme.of(context).primaryColor 
-              : Colors.white,
+              ? Theme.of(context).colorScheme.primary 
+              : Theme.of(context).colorScheme.onPrimary,
           side: isSecondary 
-              ? BorderSide(color: Theme.of(context).primaryColor) 
+              ? BorderSide(color: Theme.of(context).colorScheme.primary) 
               : null,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -42,7 +42,6 @@ class AuthButton extends StatelessWidget {
                 height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               )
             : Text(

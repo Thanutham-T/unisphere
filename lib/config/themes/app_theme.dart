@@ -6,14 +6,27 @@ class AppColors {
   static const Color white = Colors.white;
   static const Color darkBackground = Color(0xFF121212);
   static const Color darkCard = Color(0xFF1E1E1E);
+  static const Color primary = Color(0xFF2196F3); // Blue primary color
+  static const Color primaryDark = Color(0xFF1976D2);
 }
 
 class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       brightness: Brightness.light,
-      primaryColor: Colors.white,
+      primarySwatch: Colors.blue,
+      primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.white,
+      colorScheme: ColorScheme.light(
+        primary: AppColors.primary,
+        secondary: AppColors.primaryDark,
+        surface: AppColors.white,
+        background: AppColors.white,
+        onPrimary: AppColors.white,
+        onSecondary: AppColors.white,
+        onSurface: AppColors.black,
+        onBackground: AppColors.black,
+      ),
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.black,
         foregroundColor: AppColors.white,
@@ -50,9 +63,10 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.black,
+          backgroundColor: AppColors.primary,
           foregroundColor: AppColors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          elevation: 2,
         ),
       ),
       cardTheme: const CardThemeData(
@@ -81,8 +95,19 @@ class AppTheme {
   static ThemeData get darkTheme {
     return ThemeData(
       brightness: Brightness.dark,
-      primaryColor: Colors.black,
+      primarySwatch: Colors.blue,
+      primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.darkBackground,
+      colorScheme: ColorScheme.dark(
+        primary: AppColors.primary,
+        secondary: AppColors.primaryDark,
+        surface: AppColors.darkCard,
+        background: AppColors.darkBackground,
+        onPrimary: AppColors.white,
+        onSecondary: AppColors.white,
+        onSurface: AppColors.white,
+        onBackground: AppColors.white,
+      ),
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.darkCard,
         foregroundColor: AppColors.white,
@@ -119,9 +144,10 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.white,
-          foregroundColor: AppColors.black,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          elevation: 2,
         ),
       ),
       cardTheme: const CardThemeData(

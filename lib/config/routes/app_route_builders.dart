@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/cubits/fullscreen_cubit.dart';
-import '../../injector.dart';
+import '../../injector.dart' as di;
 
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
@@ -63,7 +63,7 @@ class RouteBuilders {
 
   static Widget buildMapScreen() {
     return BlocProvider(
-      create: (_) => getIt<MapBloc>(),
+      create: (_) => di.getIt<MapBloc>(),
       child: const CampusMapScreen(),
     );
   }

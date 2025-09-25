@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../widgets/auth_button.dart';
+import '../../../../config/routes/app_routes.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -46,7 +47,7 @@ class RegisterScreen extends StatelessWidget {
               AuthButton(
                 text: 'กลับไปหน้าเข้าสู่ระบบ',
                 isSecondary: true,
-                onPressed: () => context.go('/login'),
+                onPressed: () => context.goToLogin(),
               ),
             ],
           ),

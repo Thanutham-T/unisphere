@@ -110,4 +110,40 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get try_again => 'ลองอีกครั้ง';
+
+  @override
+  String get settingsTitle => 'การตั้งค่า';
+
+  @override
+  String get settingsTheme => 'ธีม';
+
+  @override
+  String get settingsThemeMode => 'โหมดธีม';
+
+  @override
+  String get settingsThemeSystem => 'ระบบ';
+
+  @override
+  String get settingsThemeLight => 'สว่าง';
+
+  @override
+  String get settingsThemeDark => 'มืด';
+
+  @override
+  String get settingsLanguage => 'ภาษา';
+
+  @override
+  String get settingsAppInfo => 'ข้อมูลแอปพลิเคชั่น';
+
+  @override
+  String get settingsVersion => 'เวอร์ชั่น: 1.0.0+1';
+
+  @override
+  String get settingsAppName => 'Unisphere - แอปพลิเคชั่นนักศึกษา';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get languageThai => 'ไทย';
 }

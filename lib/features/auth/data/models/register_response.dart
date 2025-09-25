@@ -1,6 +1,11 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'login_response.dart'; // Reuse UserData from login_response
 
+part 'register_response.g.dart';
+
+@JsonSerializable()
 class RegisterResponse {
+  @JsonKey(defaultValue: 'User registered successfully')
   final String message;
   final UserData user;
 
@@ -9,13 +14,8 @@ class RegisterResponse {
     required this.user,
   });
 
-  factory RegisterResponse.fromJson(Map<String, dynamic> json) => RegisterResponse(
-    message: json['message'] as String? ?? 'User registered successfully',
-    user: UserData.fromJson(json['user'] as Map<String, dynamic>),
-  );
+  factory RegisterResponse.fromJson(Map<String, dynamic> json) => 
+      _$RegisterResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-    'message': message,
-    'user': user.toJson(),
-  };
+  Map<String, dynamic> toJson() => _$RegisterResponseToJson(this);
 }

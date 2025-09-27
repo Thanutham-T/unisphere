@@ -49,5 +49,11 @@
 		<true/>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		
+		<!-- Permissions for speech recognition -->
+		<key>NSMicrophoneUsageDescription</key>
+		<string>แอปนี้ต้องการใช้ไมโครโฟนเพื่อค้นหาสถานที่ด้วยเสียง</string>
+		<key>NSSpeechRecognitionUsageDescription</key>
+		<string>แอปนี้ต้องการใช้การรู้จำเสียงเพื่อค้นหาสถานที่</string>
 	</dict>
 </plist>

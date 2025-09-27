@@ -9,6 +9,7 @@ import 'package:unisphere/config/routes/app_router.dart';
 import 'package:unisphere/config/themes/app_theme.dart';
 import 'package:unisphere/core/services/key_value_storage_service.dart';
 import 'package:unisphere/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:unisphere/features/map/presentation/bloc/map_bloc.dart';
 import 'package:unisphere/core/cubits/app_settings_cubit.dart';
 import 'package:unisphere/core/cubits/app_settings_state.dart';
 import 'package:unisphere/injector.dart' as di;
@@ -46,6 +47,10 @@ class MyApp extends StatelessWidget {
         // AuthBloc จาก branch Atom
         BlocProvider<AuthBloc>(
           create: (context) => di.getIt<AuthBloc>(),
+        ),
+        // MapBloc for map functionality
+        BlocProvider<MapBloc>(
+          create: (context) => di.getIt<MapBloc>(),
         ),
         // AppSettingsCubit จาก development (แทน ThemeCubit)
         BlocProvider<AppSettingsCubit>(

@@ -180,7 +180,7 @@ class _TestOfflineDownloadState extends State<TestOfflineDownload> {
                     const SizedBox(height: 16),
                     LinearProgressIndicator(
                       value: _progress,
-                      backgroundColor: colorScheme.surfaceVariant,
+                      backgroundColor: colorScheme.surfaceContainerHighest,
                       valueColor: AlwaysStoppedAnimation<Color>(
                         colorScheme.primary,
                       ),

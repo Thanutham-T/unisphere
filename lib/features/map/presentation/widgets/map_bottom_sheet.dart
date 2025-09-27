@@ -10,6 +10,7 @@ class MapBottomSheet extends StatelessWidget {
   final List<Map<String, dynamic>> categoryPlaces;
   final Function(String) onSearchChanged;
   final bool showFullContent;
+  final Function(Map<String, dynamic>)? onPlaceSelected;
 
   const MapBottomSheet({
     super.key,
@@ -19,6 +20,7 @@ class MapBottomSheet extends StatelessWidget {
     required this.categoryPlaces,
     required this.onSearchChanged,
     required this.showFullContent,
+    this.onPlaceSelected,
   });
 
   @override
@@ -58,14 +60,17 @@ class MapBottomSheet extends StatelessWidget {
             ),
 
             // Search Bar and Profile Icon Row
-            MapSearchBar(onSearchChanged: onSearchChanged),
+            MapSearchBar(
+              onSearchChanged: onSearchChanged,
+            ),
 
             // Show search results or category icons
             if (hasSearchResults) ...[
               _buildSearchResults(context),
-            ] else if (showFullContent) ...[
+            ] else ...[
+              // แสดงคลังเสมอเมื่อไม่มีการค้นหา
               _buildCategorySection(context),
-            ],
+            ]
           ],
         ),
       ),
@@ -96,9 +101,14 @@ class MapBottomSheet extends StatelessWidget {
                 (place) => MapSearchResultItem(
                   icon: place['icon'],
                   name: place['name'],
+                  onTap: () {
+                    if (onPlaceSelected != null) {
+                      onPlaceSelected!(place);
+                    }
+                  },
                 ),
               )
-              .toList(),
+              ,
         ],
       );
     } else {
@@ -138,7 +148,7 @@ class MapBottomSheet extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 16),
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: colorScheme.surfaceVariant,
+            color: colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(16),
           ),
           height: 120,

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
+import '../../../../core/logging/app_logger.dart';
 
 class PlacesService {
   static const String _overpassUrl = 'https://overpass-api.de/api/interpreter';
@@ -28,6 +29,11 @@ class PlacesService {
     (${bounds['south']},${bounds['west']},${bounds['north']},${bounds['east']});
   relation["amenity"~"$amenityFilter"]
     (${bounds['south']},${bounds['west']},${bounds['north']},${bounds['east']});
+  // Include specific university buildings
+  node["building"~"university|college"]
+    (${bounds['south']},${bounds['west']},${bounds['north']},${bounds['east']});
+  way["building"~"university|college"]
+    (${bounds['south']},${bounds['west']},${bounds['north']},${bounds['east']});
 );
 out center meta;
 ''';
@@ -48,7 +54,7 @@ out center meta;
         throw Exception('Failed to load places: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error fetching places: $e');
+      AppLogger.error('Error fetching places', e);
       return [];
     }
   }
@@ -82,7 +88,7 @@ out center meta;
         throw Exception('Failed to search places: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error searching places: $e');
+      AppLogger.error('Error searching places', e);
       return [];
     }
   }
@@ -144,19 +150,84 @@ class Place {
       lon = json['lon'].toDouble();
     }
 
+    final name = tags['name'] ?? tags['name:th'] ?? tags['name:en'] ?? 'ไม่ระบุชื่อ';
+    
+    // เพิ่มข้อมูลโทรศัพท์และเว็บไซต์สำหรับสถานที่ที่ขาดข้อมูล
+    String? phone = tags['phone'] ?? tags['contact:phone'];
+    String? website = tags['website'] ?? tags['contact:website'] ?? tags['url'];
+    
+    // เพิ่มข้อมูลจำลองสำหรับสถานที่สำคัญที่ขาดข้อมูล
+    final defaultContactInfo = _getDefaultContactInfo(name, tags['amenity']);
+    phone ??= defaultContactInfo['phone'];
+    website ??= defaultContactInfo['website'];
+
     return Place(
       id: json['id'].toString(),
-      name: tags['name'] ?? tags['name:th'] ?? tags['name:en'] ?? 'ไม่ระบุชื่อ',
+      name: name,
       description: tags['description'],
       location: LatLng(lat, lon),
-      category: _mapAmenityToCategory(tags['amenity']),
-      amenityType: tags['amenity'],
-      address: tags['addr:full'] ?? '${tags['addr:street'] ?? ''} ${tags['addr:city'] ?? ''}'.trim(),
-      phone: tags['phone'] ?? tags['contact:phone'],
-      website: tags['website'] ?? tags['contact:website'],
+      category: _mapAmenityToCategory(tags['amenity'] ?? tags['building']),
+      amenityType: tags['amenity'] ?? tags['building'],
+      address: _buildAddress(tags),
+      phone: phone,
+      website: website,
       openingHours: tags['opening_hours'],
       additionalInfo: tags,
     );
+  }
+
+  /// สร้างที่อยู่จาก tags
+  static String? _buildAddress(Map<String, dynamic> tags) {
+    final parts = <String>[];
+    if (tags['addr:housenumber'] != null) parts.add(tags['addr:housenumber']);
+    if (tags['addr:street'] != null) parts.add(tags['addr:street']);
+    if (tags['addr:subdistrict'] != null) parts.add(tags['addr:subdistrict']);
+    if (tags['addr:district'] != null) parts.add(tags['addr:district']);
+    if (tags['addr:province'] != null) parts.add(tags['addr:province']);
+    if (tags['addr:postcode'] != null) parts.add(tags['addr:postcode']);
+    
+    return parts.isNotEmpty ? parts.join(' ') : tags['addr:full'];
+  }
+
+  /// ให้ข้อมูลติดต่อเริ่มต้นสำหรับสถานที่สำคัญ
+  static Map<String, String?> _getDefaultContactInfo(String name, String? amenity) {
+    final nameLower = name.toLowerCase();
+    
+    // มหาวิทยาลัยสงขลานครินทร์
+    if (nameLower.contains('สงขลานครินทร์') || nameLower.contains('psu') || nameLower.contains('prince of songkla')) {
+      if (nameLower.contains('วิศวกรรม') || nameLower.contains('engineering')) {
+        return {'phone': '074-287000', 'website': 'https://www.eng.psu.ac.th'};
+      }
+      if (nameLower.contains('แพทย์') || nameLower.contains('medical') || nameLower.contains('medicine')) {
+        return {'phone': '074-451000', 'website': 'https://www.med.psu.ac.th'};
+      }
+      if (nameLower.contains('หอสมุด') || nameLower.contains('library')) {
+        return {'phone': '074-286174', 'website': 'https://lib.psu.ac.th'};
+      }
+      if (nameLower.contains('วิทยาศาสตร์') || nameLower.contains('science')) {
+        return {'phone': '074-288300', 'website': 'https://www.sc.psu.ac.th'};
+      }
+      if (nameLower.contains('ศิลปศาสตร์') || nameLower.contains('liberal arts')) {
+        return {'phone': '074-286801', 'website': 'https://www.la.psu.ac.th'};
+      }
+      // PSU General
+      return {'phone': '074-286000', 'website': 'https://www.psu.ac.th'};
+    }
+    
+    // โรงพยาบาล
+    if (amenity == 'hospital' || nameLower.contains('โรงพยาบาล') || nameLower.contains('hospital')) {
+      if (nameLower.contains('สงขลานครินทร์')) {
+        return {'phone': '074-451000', 'website': 'https://www.songhospital.com'};
+      }
+      return {'phone': null, 'website': null}; // จะแสดงป๊อปอัพไม่มีข้อมูล
+    }
+    
+    // ร้านอาหาร, คาเฟ่
+    if (amenity == 'restaurant' || amenity == 'cafe') {
+      return {'phone': null, 'website': null}; // ปกติร้านเล็กไม่มีเว็บไซต์
+    }
+    
+    return {'phone': null, 'website': null};
   }
 
   /// สร้าง Place จากข้อมูล Nominatim API
@@ -189,6 +260,8 @@ class Place {
         return 'คลินิก';
       case 'school':
       case 'university':
+      case 'college':
+      case 'dormitory':
         return 'สถานศึกษา';
       case 'library':
         return 'ห้องสมุด';

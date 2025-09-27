@@ -36,12 +36,7 @@ class MapSearchResultItem extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        onTap:
-            onTap ??
-            () {
-              // TODO: Navigate to selected place on map
-              AppLogger.debug('Selected place: $name');
-            },
+        onTap: onTap ?? () => AppLogger.debug('Selected place: $name'),
       ),
     );
   }

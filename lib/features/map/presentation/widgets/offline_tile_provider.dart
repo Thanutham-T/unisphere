@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:path_provider/path_provider.dart';
+import '../../../../core/logging/app_logger.dart';
 
 class OfflineTileProvider {
   static TileLayer createOfflineTileLayer() {
@@ -17,7 +18,7 @@ class OfflineTileProvider {
               return snapshot.data!;
             }
             return Container(
-              color: Theme.of(context).colorScheme.surfaceVariant,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               width: 256,
               height: 256,
               child: const Center(child: CircularProgressIndicator()),
@@ -71,7 +72,7 @@ class OfflineTileProvider {
         );
       }
     } catch (e) {
-      print('ไม่สามารถโหลดจากแคช: $e');
+      AppLogger.error('ไม่สามารถโหลดจากแคช', e);
     }
     return null;
   }
@@ -110,7 +111,7 @@ class OfflineTileProvider {
 
   static Widget _buildPlaceholder(BuildContext context) {
     return Container(
-      color: Theme.of(context).colorScheme.surfaceVariant,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       width: 256,
       height: 256,
       child: Icon(Icons.terrain, size: 50, color: Theme.of(context).hintColor),
@@ -119,7 +120,7 @@ class OfflineTileProvider {
 
   static Widget _buildErrorWidget(BuildContext context) {
     return Container(
-      color: Theme.of(context).colorScheme.surfaceVariant,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       width: 256,
       height: 256,
       child: Icon(
@@ -136,7 +137,7 @@ class OfflineTileProvider {
       // (ทำในพื้นหลัง ไม่ต้องรอ)
       _saveTileAsync(tile, url);
     } catch (e) {
-      print('ไม่สามารถเก็บลงแคช: $e');
+      AppLogger.error('ไม่สามารถเก็บลงแคช', e);
     }
   }
 
@@ -159,7 +160,7 @@ class OfflineTileProvider {
       // ดาวน์โหลดและบันทึก (ทำในพื้นหลัง)
       // ใช้ HttpClient หรือ http package
     } catch (e) {
-      print('ไม่สามารถบันทึกแคช: $e');
+      AppLogger.error('ไม่สามารถบันทึกแคช', e);
     }
   }
 }

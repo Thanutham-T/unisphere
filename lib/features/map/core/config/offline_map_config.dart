@@ -1,5 +1,6 @@
 import 'package:latlong2/latlong.dart';
 import '../services/map_tile_prefetcher.dart';
+import '../../../../core/logging/app_logger.dart';
 
 class OfflineMapConfig {
   // กำหนดขอบเขตพื้นที่มหาวิทยาลัย (ปรับตามพื้นที่จริง)
@@ -78,12 +79,12 @@ class OfflineMapConfig {
       for (int i = 0; i < allBounds.length; i++) {
         // ตรวจสอบการยกเลิก
         if (actualPrefetcher.isCancelled) {
-          print('การดาวน์โหลดถูกยกเลิก');
+          AppLogger.debug('การดาวน์โหลดถูกยกเลิก');
           return false;
         }
         
         final bounds = allBounds[i];
-        print('กำลังดาวน์โหลดพื้นที่ ${i + 1}/${allBounds.length}');
+        AppLogger.debug('กำลังดาวน์โหลดพื้นที่ ${i + 1}/${allBounds.length}');
         
         final success = await actualPrefetcher.prefetchArea(
           bounds: bounds,
@@ -92,14 +93,14 @@ class OfflineMapConfig {
         );
         
         if (!success) {
-          print('ไม่สามารถดาวน์โหลดพื้นที่ ${i + 1} ได้');
+          AppLogger.error('ไม่สามารถดาวน์โหลดพื้นที่ ${i + 1} ได้', null);
           return false;
         }
       }
       
       return true;
     } catch (e) {
-      print('เกิดข้อผิดพลาดในการดาวน์โหลด: $e');
+      AppLogger.error('เกิดข้อผิดพลาดในการดาวน์โหลด', e);
       return false;
     }
   }

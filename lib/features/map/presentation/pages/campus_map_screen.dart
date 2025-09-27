@@ -1,19 +1,20 @@
+import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 import '../../../../core/logging/app_logger.dart';
 import '../../domain/entities/place_entity.dart';
 import '../bloc/map_bloc.dart';
 import '../bloc/map_event.dart';
 import '../bloc/map_state.dart';
-import '../widgets/location_details_bottom_sheet_widget.dart';
 import '../widgets/map_bottom_sheet.dart';
-import '../widgets/offline_map_download_dialog.dart';
-import '../../core/services/map_tile_prefetcher.dart';
+import '../widgets/navigation_bottom_sheet.dart';
 import '../../data/services/places_service.dart';
-import 'test_offline_download.dart';
 
 class CampusMapScreen extends StatefulWidget {
   const CampusMapScreen({super.key});
@@ -23,105 +24,213 @@ class CampusMapScreen extends StatefulWidget {
 }
 
 class _CampusMapScreenState extends State<CampusMapScreen> {
-  // Static controllers for stateless implementation
+  // Constants
+  static const LatLng _campusCenter = LatLng(7.0069451, 100.5007147);
+  static const LatLng _testLocation = LatLng(7.004097, 100.500940);
+  
+  // Controllers
   static final MapController _mapController = MapController();
   static final ValueNotifier<String> _searchQuery = ValueNotifier('');
   
-  // Default campus center (adjust to your campus coordinates)
-  static const LatLng _campusCenter = LatLng(7.0069451, 100.5007147);
-
-  // Places service และข้อมูลสถานที่จริง
+  // Services
   final PlacesService _placesService = PlacesService();
+  
+  // State variables
   List<Place> _realPlaces = [];
   bool _isLoadingPlaces = false;
+  bool _showTestLocationMarker = false;
+  bool _isNavigationActive = false;
+  LatLng? _navigationDestination;
+  String _destinationName = '';
+  List<LatLng> _routePoints = [];
 
 
 
-  // Mock data for places with coordinates and detailed info
-  static const List<Map<String, dynamic>> _warehousePlaces = [
-    {
-      'name': 'คณะวิศวกรรมศาสตร์', 
-      'icon': Icons.school,
-      'lat': 7.0069451,
-      'lng': 100.5007147,
-      'category': 'คณะ',
-      'description': 'คณะวิศวกรรมศาสตร์ มหาวิทยาลยัสงขลานครินทร์',
-      'openStatus': 'เปิด',
-      'distance': '2.0 กม.',
-      'rating': 4.5,
-    },
-    {
-      'name': 'หอสมุดคุณหญิงหลง', 
-      'icon': Icons.local_library,
-      'lat': 7.0089451,
-      'lng': 100.5027147,
-      'category': 'ห้องสมุด',
-      'description': 'ห้องสมุดกลางของมหาวิทยาลัย',
-      'openStatus': 'เปิด',
-      'distance': '1.8 กม.',
-      'rating': 4.7,
-    },
-    {
-      'name': 'Starbucks', 
-      'icon': Icons.local_cafe,
-      'lat': 7.0049451,
-      'lng': 100.4987147,
-      'category': 'ร้านกาแฟ',
-      'description': 'ร้านกาแฟ • มหาวิทยาลัยสงขลานครินทร์',
-      'openStatus': 'เปิดใหม่',
-      'distance': '1.2 กม.',
-      'rating': 4.3,
-    },
-    {
-      'name': 'ตลาดเกษตร มอ', 
-      'icon': Icons.store,
-      'lat': 7.0029451,
-      'lng': 100.5047147,
-      'category': 'ตลาด',
-      'description': 'ตลาดสดของมหาวิทยาลัย',
-      'openStatus': 'เปิด',
-      'distance': '2.5 กม.',
-      'rating': 4.2,
-    },
-    {
-      'name': 'โรงพยาบาล มอ', 
-      'icon': Icons.local_hospital,
-      'lat': 7.0109451,
-      'lng': 100.5067147,
-      'category': 'โรงพยาบาล',
-      'description': 'โรงพยาบาลมหาวิทยาลัยสงขลานครินทร์',
-      'openStatus': 'เปิด 24 ชม.',
-      'distance': '3.1 กม.',
-      'rating': 4.6,
-    },
-    {
-      'name': 'โรงอาหาร', 
-      'icon': Icons.restaurant,
-      'lat': 7.0059451,
-      'lng': 100.5017147,
-      'category': 'ร้านอาหาร',
-      'description': 'โรงอาหารกลางมหาวิทยาลัย',
-      'openStatus': 'เปิด',
-      'distance': '1.5 กม.',
-      'rating': 4.1,
-    },
-  ];
+
 
   void _onSearchChanged(String query, BuildContext context) {
     _searchQuery.value = query;
     AppLogger.debug('Search query: $query');
   }
 
+  void _onSetMyLocationTap(BuildContext context) {
+    try {
+      // Move map to test location and show marker
+      _mapController.move(_testLocation, 18.0);
+      
+      // Show test location marker
+      setState(() {
+        _showTestLocationMarker = true;
+      });
+      
+      // Show confirmation
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.location_on, color: Theme.of(context).colorScheme.onPrimary),
+              const SizedBox(width: 8),
+              const Text('ระบุตำแหน่งทดสอบสำเร็จแล้ว'),
+            ],
+          ),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      
+      AppLogger.debug('Test location set and map moved to: ${_testLocation.latitude}, ${_testLocation.longitude}');
+      
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('เกิดข้อผิดพลาด: ${e.toString()}'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+      AppLogger.debug('Error setting test location: $e');
+    }
+  }
+
+  void _startNavigationToDestination(LatLng destination, String name) {
+    if (!_showTestLocationMarker) {
+      // Show message to set test location first
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('กรุณาระบุตำแหน่งของคุณก่อนเริ่มนำทาง'),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isNavigationActive = true;
+      _navigationDestination = destination;
+      _destinationName = name;
+      _routePoints = _calculateRoute(_testLocation, destination);
+    });
+
+    AppLogger.debug('Navigation started from ${_testLocation.latitude},${_testLocation.longitude} to ${destination.latitude},${destination.longitude}');
+    AppLogger.debug('Destination: $_destinationName at ${_navigationDestination?.latitude},${_navigationDestination?.longitude}');
+  }
+
+  void _stopNavigation() {
+    setState(() {
+      _isNavigationActive = false;
+      _navigationDestination = null;
+      _destinationName = '';
+      _routePoints = [];
+    });
+    AppLogger.debug('Navigation stopped');
+  }
+
+  void _showNavigationBottomSheet(BuildContext context, LatLng destination, String name) {
+    // Find the place from real places to get additional data
+    final place = _realPlaces.cast<Place?>().firstWhere(
+      (place) => place?.name == name,
+      orElse: () => null,
+    );
+
+    // Always calculate distance from test location (if set) or campus center
+    final startPoint = _showTestLocationMarker ? _testLocation : _campusCenter;
+    final distanceKm = _calculateDistance(startPoint, destination);
+    final formattedDistance = _formatDistance(distanceKm);
+    final estimatedTime = _calculateEstimatedTime(distanceKm);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => NavigationBottomSheet(
+        destinationName: name,
+        destination: destination,
+        distance: formattedDistance,
+        estimatedTimeMinutes: estimatedTime,
+        phoneNumber: place?.phone, // Use phone from OSM data
+        website: place?.website, // Use website from OSM data
+        onStartNavigation: () {
+          Navigator.pop(context);
+          if (_showTestLocationMarker) {
+            _startNavigationToDestination(destination, name);
+          } else {
+            // Start navigation from campus center
+            setState(() {
+              _isNavigationActive = true;
+              _navigationDestination = destination;
+              _destinationName = name;
+              _routePoints = _calculateRoute(_campusCenter, destination);
+            });
+            AppLogger.debug('Navigation started from campus center to $name');
+          }
+        },
+        onClose: () => Navigator.pop(context),
+      ),
+    );
+  }
+
+  void _onPlaceSelectedFromSearch(BuildContext context, Map<String, dynamic> placeData) {
+    final destination = LatLng(placeData['lat'], placeData['lng']);
+    final name = placeData['name'];
+    
+    // เลื่อนแผนที่ไปยังสถานที่ที่เลือก
+    _mapController.move(destination, 16.0);
+    
+    // แสดง NavigationBottomSheet
+    _showNavigationBottomSheet(context, destination, name);
+  }
+
+  List<LatLng> _calculateRoute(LatLng start, LatLng destination) {
+    // Simple straight line route for demonstration
+    // In a real app, you would use a routing service
+    return [start, destination];
+  }
+
+  double _calculateDistance(LatLng start, LatLng end) {
+    const Distance distance = Distance();
+    return distance.as(LengthUnit.Kilometer, start, end);
+  }
+
+  String _formatDistance(double distanceKm) {
+    if (distanceKm < 1.0) {
+      // Show in meters with no decimals if less than 1 km
+      int meters = (distanceKm * 1000).round();
+      return '${meters}m';
+    } else {
+      // Show in km with 1 decimal place
+      return '${distanceKm.toStringAsFixed(1)}km';
+    }
+  }
+
+  int _calculateEstimatedTime(double distanceKm) {
+    // More realistic walking speed: 4.5 km/h for campus terrain
+    double hours = distanceKm / 4.5;
+    int minutes = (hours * 60).round();
+    
+    // Minimum 1 minute for very short distances
+    return minutes < 1 ? 1 : minutes;
+  }
+
   List<Map<String, dynamic>> _getFilteredPlaces(String query) {
     if (query.isEmpty) return [];
     
-    return _warehousePlaces
-        .where((place) => place['name'].toString().toLowerCase().contains(query.toLowerCase()))
+    // Filter real places from OSM data
+    return _realPlaces
+        .where((place) => place.name
+            .toLowerCase()
+            .contains(query.toLowerCase()))
+        .map((place) => {
+          'name': place.name,
+          'icon': _getIconFromAmenity(place.amenityType),
+          'lat': place.location.latitude,
+          'lng': place.location.longitude,
+        })
         .toList();
   }
 
   /// สร้างปุ่มควบคุมแมพ
   Widget _buildMapControlButtons(BuildContext context) {
+    // Capture the context that has access to MapBloc
+    final blocContext = context;
+    
     return Positioned(
       right: 16,
       top: 100, // ด้านล่าง AppBar
@@ -152,7 +261,20 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
               backgroundColor: Theme.of(context).colorScheme.surface,
               foregroundColor: Theme.of(context).colorScheme.primary,
               elevation: 4,
-              onPressed: () => _getCurrentLocation(context),
+              onPressed: () {
+                try {
+                  blocContext.read<MapBloc>().add(GetCurrentLocation());
+                  AppLogger.debug('Requesting current location');
+                } catch (e) {
+                  AppLogger.debug('Error requesting location: $e');
+                  ScaffoldMessenger.of(blocContext).showSnackBar(
+                    SnackBar(
+                      content: const Text('ไม่สามารถขอสิทธิ์เข้าถึงตำแหน่งได้ กรุณาลองใหม่อีกครั้ง'),
+                      backgroundColor: Theme.of(blocContext).colorScheme.error,
+                    ),
+                  );
+                }
+              },
               child: const Icon(Icons.my_location),
             ),
           ),
@@ -188,6 +310,40 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
                 : const Icon(Icons.refresh),
             ),
           ),
+
+          const SizedBox(height: 8),
+
+          // ปุ่มระบุตำแหน่งของฉัน (ทดสอบนำทาง) หรือหยุดการนำทาง
+          Tooltip(
+            message: _isNavigationActive 
+              ? 'หยุดการนำทาง' 
+              : 'ระบุตำแหน่งของฉัน (ทดสอบนำทาง)',
+            child: FloatingActionButton(
+              heroTag: "set_test_location",
+              mini: true,
+              backgroundColor: _isNavigationActive
+                ? Theme.of(context).colorScheme.errorContainer
+                : _showTestLocationMarker 
+                  ? Theme.of(context).colorScheme.primaryContainer
+                  : Theme.of(context).colorScheme.surface,
+              foregroundColor: _isNavigationActive
+                ? Theme.of(context).colorScheme.onErrorContainer
+                : _showTestLocationMarker 
+                  ? Theme.of(context).colorScheme.onPrimaryContainer
+                  : Theme.of(context).colorScheme.primary,
+              elevation: 4,
+              onPressed: () {
+                if (_isNavigationActive) {
+                  _stopNavigation();
+                } else {
+                  _onSetMyLocationTap(context);
+                }
+              },
+              child: Icon(_isNavigationActive 
+                ? Icons.stop 
+                : Icons.location_searching),
+            ),
+          ),
         ],
       ),
     );
@@ -199,11 +355,7 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
     AppLogger.debug('Moved to campus center: $_campusCenter');
   }
 
-  /// หาตำแหน่งปัจจุบันของผู้ใช้
-  void _getCurrentLocation(BuildContext context) {
-    context.read<MapBloc>().add(GetCurrentLocation());
-    AppLogger.debug('Requesting current location');
-  }
+
 
   /// สร้าง status card สำหรับแสดงสถานะต่างๆ
   Widget _buildStatusCard(BuildContext context, String message, {double? bottom}) {
@@ -240,478 +392,21 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
     );
   }
 
-  /// แสดง bottom sheet พร้อมรายละเอียดสถานที่
-  void _showPlaceDetailsBottomSheet(BuildContext context, Map<String, dynamic> place) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.4,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Handle bar
-            Center(
-              child: Container(
-                margin: const EdgeInsets.only(top: 12),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).dividerColor,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            
-            // Close button
-            Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.close),
-              ),
-            ),
-            
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Place name
-                    Text(
-                      place['name'] as String,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 4),
-                    
-                    // Category and description
-                    Text(
-                      '${place['category']} • ${place['description']}',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).textTheme.bodySmall?.color,
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 16),
-                    
-                    // Action buttons row
-                    Row(
-                      children: [
-                        // Directions button
-                        Expanded(
-                          child: _buildActionButton(
-                            context,
-                            icon: Icons.directions_car,
-                            label: '2 นาที',
-                            subtitle: 'เส้นทาง',
-                            onTap: () {
-                              // Handle directions
-                              Navigator.pop(context);
-                              _getDirectionsToPlace(place);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('กำลังหาเส้นทางไป ${place['name']}')),
-                              );
-                            },
-                          ),
-                        ),
-                        
-                        const SizedBox(width: 12),
-                        
-                        // Call button
-                        Expanded(
-                          child: _buildActionButton(
-                            context,
-                            icon: Icons.phone,
-                            label: 'โทร',
-                            subtitle: '',
-                            onTap: () {
-                              // Handle call
-                              Navigator.pop(context);
-                              _callPlace(place);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('โทรหา ${place['name']}')),
-                              );
-                            },
-                          ),
-                        ),
-                        
-                        const SizedBox(width: 12),
-                        
-                        // Website/More info button
-                        Expanded(
-                          child: _buildActionButton(
-                            context,
-                            icon: Icons.language,
-                            label: 'เว็บไซต์',
-                            subtitle: '',
-                            onTap: () {
-                              // Handle website
-                              Navigator.pop(context);
-                              _openWebsite(place);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('เปิดเว็บไซต์ ${place['name']}')),
-                              );
-                            },
-                          ),
-                        ),
-                        
-                        const SizedBox(width: 12),
-                        
-                        // Favorite button
-                        Expanded(
-                          child: _buildActionButton(
-                            context,
-                            icon: Icons.star_border,
-                            label: 'บันทึก',
-                            subtitle: '',
-                            onTap: () {
-                              // Handle save
-                              _toggleFavorite(place);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('บันทึก ${place['name']} แล้ว')),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    
-                    const SizedBox(height: 16),
-                    
-                    // Additional info
-                    Row(
-                      children: [
-                        const Text('จากที่ตั้ง:'),
-                        const SizedBox(width: 8),
-                        Text(
-                          place['distance'] as String,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    
-                    const SizedBox(height: 8),
-                    
-                    Row(
-                      children: [
-                        const Text('สถานะ:'),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: _getStatusColor(place['openStatus'] as String),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            place['openStatus'] as String,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
-  Widget _buildActionButton(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required String subtitle,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceVariant,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 24),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            if (subtitle.isNotEmpty)
-              Text(
-                subtitle,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
-                ),
-                textAlign: TextAlign.center,
-              ),
-          ],
-        ),
-      ),
-    );
-  }
 
-  Color _getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'เปิด':
-        return Colors.green;
-      case 'เปิดใหม่':
-        return Colors.blue;
-      case 'เปิด 24 ชม.':
-        return Colors.purple;
-      case 'ปิด':
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
-  }
 
-  void _getDirectionsToPlace(Map<String, dynamic> place) {
-    // Implement directions functionality - will be implemented later
-    AppLogger.debug('Getting directions to ${place['name']}');
-  }
 
-  void _callPlace(Map<String, dynamic> place) {
-    // Implement call functionality - will be implemented later
-    AppLogger.debug('Calling ${place['name']}');
-  }
 
-  void _openWebsite(Map<String, dynamic> place) {
-    // Implement website functionality - will be implemented later
-    AppLogger.debug('Opening website for ${place['name']}');
-  }
 
-  void _toggleFavorite(Map<String, dynamic> place) {
-    // Implement favorite functionality - will be implemented later
-    AppLogger.debug('Toggling favorite for ${place['name']}');
-  }
 
-  /// แสดง bottom sheet สำหรับสถานที่จริงจาก OSM
-  void _showRealPlaceDetailsBottomSheet(BuildContext context, Place place) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.4,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Handle bar
-            Center(
-              child: Container(
-                margin: const EdgeInsets.only(top: 12),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).dividerColor,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            
-            // Close button
-            Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.close),
-              ),
-            ),
-            
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Place name
-                    Text(
-                      place.name,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 4),
-                    
-                    // Category and description
-                    Text(
-                      '${place.category} • ${place.amenityType ?? ''}',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).textTheme.bodySmall?.color,
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 8),
-                    
-                    // Address
-                    if (place.address != null && place.address!.isNotEmpty)
-                      Text(
-                        place.address!,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    
-                    const SizedBox(height: 16),
-                    
-                    // Action buttons row
-                    Row(
-                      children: [
-                        // Directions button
-                        Expanded(
-                          child: _buildActionButton(
-                            context,
-                            icon: Icons.directions_car,
-                            label: 'เส้นทาง',
-                            subtitle: '',
-                            onTap: () {
-                              Navigator.pop(context);
-                              _getRealDirectionsToPlace(place);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('กำลังหาเส้นทางไป ${place.name}')),
-                              );
-                            },
-                          ),
-                        ),
-                        
-                        const SizedBox(width: 12),
-                        
-                        // Call button (if phone available)
-                        if (place.phone != null)
-                          Expanded(
-                            child: _buildActionButton(
-                              context,
-                              icon: Icons.phone,
-                              label: 'โทร',
-                              subtitle: '',
-                              onTap: () {
-                                Navigator.pop(context);
-                                _callRealPlace(place);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('โทรหา ${place.name}')),
-                                );
-                              },
-                            ),
-                          ),
-                        
-                        if (place.phone != null) const SizedBox(width: 12),
-                        
-                        // Website button (if website available)
-                        if (place.website != null)
-                          Expanded(
-                            child: _buildActionButton(
-                              context,
-                              icon: Icons.language,
-                              label: 'เว็บไซต์',
-                              subtitle: '',
-                              onTap: () {
-                                Navigator.pop(context);
-                                _openRealWebsite(place);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('เปิดเว็บไซต์ ${place.name}')),
-                                );
-                              },
-                            ),
-                          ),
-                        
-                        if (place.website != null) const SizedBox(width: 12),
-                        
-                        // Favorite button
-                        Expanded(
-                          child: _buildActionButton(
-                            context,
-                            icon: Icons.star_border,
-                            label: 'บันทึก',
-                            subtitle: '',
-                            onTap: () {
-                              _toggleRealFavorite(place);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('บันทึก ${place.name} แล้ว')),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    
-                    const SizedBox(height: 16),
-                    
-                    // Opening hours
-                    if (place.openingHours != null && place.openingHours!.isNotEmpty)
-                      Row(
-                        children: [
-                          const Text('เวลาเปิด-ปิด:'),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              place.openingHours!,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-                    
-                    const SizedBox(height: 8),
-                    
-                    // Coordinates for debugging
-                    Text(
-                      'ตำแหน่ง: ${place.location.latitude.toStringAsFixed(6)}, ${place.location.longitude.toStringAsFixed(6)}',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
-  void _getRealDirectionsToPlace(Place place) {
-    AppLogger.debug('Getting directions to ${place.name}');
-  }
 
-  void _callRealPlace(Place place) {
-    AppLogger.debug('Calling ${place.name} at ${place.phone}');
-  }
 
-  void _openRealWebsite(Place place) {
-    AppLogger.debug('Opening website for ${place.name}: ${place.website}');
-  }
 
-  void _toggleRealFavorite(Place place) {
-    AppLogger.debug('Toggling favorite for ${place.name}');
-  }
+
+
+
+
 
   @override
   void initState() {
@@ -770,19 +465,6 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
           },
         ),
         actions: [
-          // Cache status indicator
-          Tooltip(
-            message: 'แผนที่รองรับการใช้งานออฟไลน์',
-            child: Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: Icon(
-                Icons.offline_pin,
-                color: Theme.of(context).colorScheme.secondary,
-                size: 24,
-              ),
-            ),
-          ),
-          
           // ปุ่มจัดการแผนที่ออฟไลน์
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
@@ -879,9 +561,13 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
                             scrollController: scrollController,
                             searchQuery: searchQuery,
                             filteredPlaces: filteredPlaces,
-                            categoryPlaces: _warehousePlaces,
+                            categoryPlaces: _realPlaces.map((place) => {
+                              'name': place.name,
+                              'icon': _getIconFromAmenity(place.amenityType),
+                            }).toList(),
                             onSearchChanged: (query) => _onSearchChanged(query, context),
                             showFullContent: showFullContent,
+                            onPlaceSelected: (placeData) => _onPlaceSelectedFromSearch(context, placeData),
                           );
                         },
                       );
@@ -962,12 +648,12 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
               maxWidthDiskCache: 256,
               maxHeightDiskCache: 256,
               placeholder: (context, url) => Container(
-                color: Theme.of(context).colorScheme.surfaceVariant,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 width: 256,
                 height: 256,
               ),
               errorWidget: (context, url, error) => Container(
-                color: Theme.of(context).colorScheme.surfaceVariant,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 width: 256,
                 height: 256,
                 child: Icon(
@@ -987,6 +673,20 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
               Polyline(
                 points: _buildRoutePoints(state.currentRoute!),
                 strokeWidth: 4.0,
+              ),
+            ],
+          ),
+
+        // Navigation route polyline
+        if (_isNavigationActive && _routePoints.isNotEmpty)
+          PolylineLayer(
+            polylines: [
+              Polyline(
+                points: _routePoints,
+                strokeWidth: 5.0,
+                color: Theme.of(context).colorScheme.primary,
+                borderStrokeWidth: 2.0,
+                borderColor: Colors.white,
               ),
             ],
           ),
@@ -1010,18 +710,48 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
             state.currentLocation!.latitude,
             state.currentLocation!.longitude,
           ),
-          width: 30,
-          height: 30,
+          width: 24,
+          height: 24,
           child: Container(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primary,
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 2),
+              border: Border.all(color: Colors.white, width: 1.5),
             ),
             child: const Icon(
               Icons.my_location,
-              size: 16,
+              size: 12,
               color: Colors.white,
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Test location marker for navigation testing
+    if (_showTestLocationMarker) {
+      markers.add(
+        Marker(
+          point: _testLocation,
+          width: 32,
+          height: 32,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.tertiary,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 2),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Icon(
+              Icons.location_searching,
+              size: 18,
+              color: Theme.of(context).colorScheme.onTertiary,
             ),
           ),
         ),
@@ -1033,127 +763,47 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
       markers.add(
         Marker(
           point: place.location,
-          width: 40,
-          height: 50,
+          width: 30,
+          height: 30,
           child: GestureDetector(
             onTap: () {
               // Focus on the selected place
               _mapController.move(place.location, 18.0);
-              // Show place details
-              _showRealPlaceDetailsBottomSheet(context, place);
+              // Show navigation bottom sheet for OSM places
+              _showNavigationBottomSheet(context, place.location, place.name);
             },
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: _getMarkerColorFromCategory(place.category),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+            child: Container(
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                color: _getMarkerColorFromCategory(place.category),
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 1.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 3,
+                    offset: const Offset(0, 1),
                   ),
-                  child: Icon(
-                    _getIconFromAmenity(place.amenityType),
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                ),
-                // Small arrow pointing down
-                Icon(
-                  Icons.arrow_drop_down,
-                  color: _getMarkerColorFromCategory(place.category),
-                  size: 12,
-                ),
-              ],
+                ],
+              ),
+              child: Icon(
+                _getIconFromAmenity(place.amenityType),
+                size: 16,
+                color: Colors.white,
+              ),
             ),
           ),
         ),
       );
     }
 
-    // เพิ่ม mock data สำหรับทดสอบ (จะลบออกในภายหลัง)
-    for (final place in _warehousePlaces) {
-      markers.add(
-        Marker(
-          point: LatLng(place['lat'] as double, place['lng'] as double),
-          width: 40,
-          height: 50,
-          child: GestureDetector(
-            onTap: () {
-              // Focus on the selected place
-              _mapController.move(
-                LatLng(place['lat'] as double, place['lng'] as double), 
-                18.0
-              );
-              // Show place details
-              _showPlaceDetailsBottomSheet(context, place);
-            },
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: _getMarkerColor(place['category'] as String),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    place['icon'] as IconData,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                ),
-                // Small arrow pointing down
-                Icon(
-                  Icons.arrow_drop_down,
-                  color: _getMarkerColor(place['category'] as String),
-                  size: 12,
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
+    // OSM places are already handled above in the real places loop
 
     return markers;
   }
 
-  Color _getMarkerColor(String category) {
-    switch (category) {
-      case 'ร้านกาแฟ':
-        return Colors.brown;
-      case 'ร้านอาหาร':
-        return Colors.orange;
-      case 'ห้องสมุด':
-        return Colors.blue;
-      case 'โรงพยาบาล':
-        return Colors.red;
-      case 'คณะ':
-        return Colors.green;
-      case 'ตลาด':
-        return Colors.purple;
-      default:
-        return Colors.grey;
-    }
-  }
+
 
   Color _getMarkerColorFromCategory(String category) {
     switch (category) {
@@ -1241,10 +891,27 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
   }
 
   void _showPlaceDetails(PlaceEntity place, BuildContext context) {
-    showModalBottomSheet(
+    // Show simple dialog for place details
+    showDialog(
       context: context,
-      isScrollControlled: true,
-      builder: (context) => LocationDetailsBottomSheet(place: place),
+      builder: (context) => AlertDialog(
+        title: Text(place.name),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('ประเภท: ${place.category}'),
+            if (place.description != null) 
+              Text('รายละเอียด: ${place.description}'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('ปิด'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -1300,7 +967,34 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
   void _showOfflineDownloadDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => const OfflineMapDownloadDialog(),
+      builder: (context) => AlertDialog(
+        title: const Text('ดาวน์โหลดแผนที่ออฟไลน์'),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('🗺️ พื้นที่: มหาวิทยาลัยและบริเวณโดยรอบ (รัศมี 2 กม.)'),
+            Text('🔍 ระดับซูม: 10-19 (รายละเอียดสูง)'),
+            Text('💾 ขนาดโดยประมาณ: ~50 MB'),
+            Text('📱 จัดเก็บ: ในเครื่องของคุณ (ใช้ได้แม้ไม่มีอินเทอร์เน็ต)'),
+            SizedBox(height: 16),
+            Text('⚠️ การดาวน์โหลดอาจใช้เวลา 2-5 นาที\nตรวจสอบให้แน่ใจว่าเชื่อมต่ออินเทอร์เน็ตและมีพื้นที่เก็บข้อมูลเพียงพอ'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('ยกเลิก'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _startOfflineDownload(context);
+            },
+            child: const Text('เริ่มดาวน์โหลด'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -1352,20 +1046,35 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
 
   Future<Map<String, dynamic>> _getOfflineMapStatus() async {
     try {
-      // ใช้ MapTilePrefetcher เพื่อตรวจสอบสถานะ
-      final prefetcher = MapTilePrefetcher();
-      final cacheSize = await prefetcher.getCacheSize();
-      final cacheSizeMB = cacheSize / 1024 / 1024;
+      final directory = await getApplicationDocumentsDirectory();
+      final cacheDir = Directory('${directory.path}/offline_tiles');
       
-      // ประมาณการจำนวน tiles (25KB ต่อ tile โดยเฉลี่ย)
-      final estimatedTileCount = (cacheSize / 25000).round();
+      if (!await cacheDir.exists()) {
+        return {
+          'hasCache': false,
+          'cacheSizeMB': 0.0,
+          'tileCount': 0,
+        };
+      }
+      
+      int tileCount = 0;
+      double totalSizeBytes = 0;
+      
+      await for (final entity in cacheDir.list(recursive: true)) {
+        if (entity is File && entity.path.endsWith('.png')) {
+          tileCount++;
+          final stat = await entity.stat();
+          totalSizeBytes += stat.size;
+        }
+      }
       
       return {
-        'hasCache': cacheSize > 0,
-        'cacheSizeMB': cacheSizeMB,
-        'tileCount': estimatedTileCount,
+        'hasCache': tileCount > 0,
+        'cacheSizeMB': totalSizeBytes / (1024 * 1024),
+        'tileCount': tileCount,
       };
     } catch (e) {
+      AppLogger.error('Error getting offline status', e);
       return {
         'hasCache': false,
         'cacheSizeMB': 0.0,
@@ -1375,10 +1084,50 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
   }
 
   void _showTestDownloadPage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const TestOfflineDownload(),
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('ทดสอบการดาวน์โหลด'),
+        content: FutureBuilder<bool>(
+          future: _testTileDownload(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text('กำลังทดสอบการดาวน์โหลด...'),
+                ],
+              );
+            }
+            
+            final success = snapshot.data ?? false;
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  success ? Icons.check_circle : Icons.error,
+                  color: success ? Colors.green : Colors.red,
+                  size: 48,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  success 
+                    ? 'การทดสอบสำเร็จ!\nสามารถดาวน์โหลดแผนที่ออฟไลน์ได้'
+                    : 'การทดสอบล้มเหลว\nตรวจสอบการเชื่อมต่ออินเทอร์เน็ต',
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            );
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('ปิด'),
+          ),
+        ],
       ),
     );
   }
@@ -1403,5 +1152,202 @@ class _CampusMapScreenState extends State<CampusMapScreen> {
   //       return Icons.place;
   //   }
   // }
+
+  Future<void> _startOfflineDownload(BuildContext context) async {
+    final ValueNotifier<String> progressText = ValueNotifier('เตรียมการดาวน์โหลด...');
+    final ValueNotifier<double> progressValue = ValueNotifier(0.0);
+    
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('กำลังดาวน์โหลดแผนที่ออฟไลน์'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ValueListenableBuilder<double>(
+              valueListenable: progressValue,
+              builder: (context, value, child) {
+                return LinearProgressIndicator(
+                  value: value,
+                  backgroundColor: Colors.grey[300],
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
+            ValueListenableBuilder<String>(
+              valueListenable: progressText,
+              builder: (context, text, child) {
+                return Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 14),
+                );
+              },
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'กรุณารอสักครู่ การดาวน์โหลดจะใช้เวลาประมาณ 2-5 นาที\nแผนที่จะถูกเก็บไว้ในเครื่องของคุณสำหรับใช้งานออฟไลน์',
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+
+    try {
+      final success = await _downloadMapTiles(progressText, progressValue);
+      if (mounted) {
+        Navigator.pop(context); // ปิด dialog กำลังดาวน์โหลด
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(success 
+              ? 'ดาวน์โหลดแผนที่ออฟไลน์สำเร็จ! แผนที่ถูกเก็บไว้ในเครื่องของคุณแล้ว'
+              : 'ดาวน์โหลดล้มเหลว กรุณาลองใหม่'),
+            backgroundColor: success ? Colors.green : Colors.red,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.pop(context); // ปิด dialog กำลังดาวน์โหลด
+        AppLogger.error('Download failed', e);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('เกิดข้อผิดพลาดในการดาวน์โหลด'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<bool> _downloadMapTiles(ValueNotifier<String> progressText, ValueNotifier<double> progressValue) async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final cacheDir = Directory('${directory.path}/offline_tiles');
+      
+      if (!await cacheDir.exists()) {
+        await cacheDir.create(recursive: true);
+      }
+
+      AppLogger.debug('แผนที่ออฟไลน์จะถูกเก็บไว้ที่: ${cacheDir.path}');
+      progressText.value = 'กำลังคำนวณขนาดการดาวน์โหลด...';
+
+      // University area bounds
+      const double centerLat = 7.0069451;
+      const double centerLng = 100.5007147;
+      const double radiusKm = 2.0; // 2km radius
+      
+      // Calculate total tiles first
+      int totalTiles = 0;
+      for (int zoom = 10; zoom <= 19; zoom++) {
+        final bounds = _getTileBounds(centerLat, centerLng, radiusKm, zoom);
+        totalTiles += (bounds['maxX']! - bounds['minX']! + 1) * (bounds['maxY']! - bounds['minY']! + 1);
+      }
+      
+      AppLogger.debug('จำนวน tiles ทั้งหมดที่ต้องดาวน์โหลด: $totalTiles');
+      
+      int processedTiles = 0;
+      int downloadedTiles = 0;
+      int skippedTiles = 0;
+      
+      for (int zoom = 10; zoom <= 19; zoom++) {
+        final bounds = _getTileBounds(centerLat, centerLng, radiusKm, zoom);
+        progressText.value = 'กำลังดาวน์โหลดระดับซูม $zoom...';
+        
+        for (int x = bounds['minX']!; x <= bounds['maxX']!; x++) {
+          for (int y = bounds['minY']!; y <= bounds['maxY']!; y++) {
+            processedTiles++;
+            
+            final tileFile = File('${cacheDir.path}/$zoom/$x/$y.png');
+            if (!await tileFile.exists()) {
+              await tileFile.parent.create(recursive: true);
+              
+              final url = 'https://tile.openstreetmap.org/$zoom/$x/$y.png';
+              try {
+                final response = await http.get(Uri.parse(url));
+                if (response.statusCode == 200) {
+                  await tileFile.writeAsBytes(response.bodyBytes);
+                  downloadedTiles++;
+                } else {
+                  AppLogger.debug('HTTP error ${response.statusCode} for tile $url');
+                }
+              } catch (e) {
+                AppLogger.error('Failed to download tile $url', e);
+              }
+              
+              // Add small delay to avoid overwhelming the server
+              await Future.delayed(const Duration(milliseconds: 50));
+            } else {
+              skippedTiles++;
+            }
+            
+            // Update progress
+            final progress = processedTiles / totalTiles;
+            progressValue.value = progress;
+            final percentage = (progress * 100).toInt();
+            progressText.value = 'ดาวน์โหลดแล้ว $downloadedTiles tiles ($percentage%)\nข้าม $skippedTiles tiles ที่มีอยู่แล้ว';
+          }
+        }
+      }
+      
+      final totalSuccess = downloadedTiles + skippedTiles;
+      AppLogger.debug('ดาวน์โหลดเสร็จสิ้น: $downloadedTiles tiles ใหม่, ข้าม $skippedTiles tiles, รวม $totalSuccess/$totalTiles tiles');
+      progressText.value = 'ดาวน์โหลดเสร็จสิ้น! $totalSuccess tiles พร้อมใช้งาน';
+      
+      return totalSuccess > 0;
+    } catch (e) {
+      AppLogger.error('Tile download error', e);
+      progressText.value = 'เกิดข้อผิดพลาดในการดาวน์โหลด';
+      return false;
+    }
+  }
+
+  Map<String, int> _getTileBounds(double lat, double lng, double radiusKm, int zoom) {
+    final tileSize = 256;
+    final earthRadius = 6378137; // meters
+    final metersPerPixel = earthRadius * 2 * 3.14159265359 / tileSize / pow(2, zoom);
+    
+    // Convert radius to pixels
+    final radiusPixels = (radiusKm * 1000 / metersPerPixel).round();
+    
+    // Get center tile
+    final centerTileX = ((lng + 180) / 360 * pow(2, zoom)).floor();
+    final centerTileY = ((1 - log(tan(lat * 3.14159265359 / 180) + 1 / cos(lat * 3.14159265359 / 180)) / 3.14159265359) / 2 * pow(2, zoom)).floor();
+    
+    // Calculate bounds
+    final tilesToCover = (radiusPixels / tileSize).ceil();
+    
+    return {
+      'minX': (centerTileX - tilesToCover).clamp(0, pow(2, zoom).toInt() - 1),
+      'maxX': (centerTileX + tilesToCover).clamp(0, pow(2, zoom).toInt() - 1),
+      'minY': (centerTileY - tilesToCover).clamp(0, pow(2, zoom).toInt() - 1),
+      'maxY': (centerTileY + tilesToCover).clamp(0, pow(2, zoom).toInt() - 1),
+    };
+  }
+
+  Future<bool> _testTileDownload() async {
+    try {
+      // Test downloading a single tile
+      final url = 'https://tile.openstreetmap.org/15/25165/16302.png'; // Campus area tile
+      final response = await http.get(Uri.parse(url));
+      
+      if (response.statusCode == 200) {
+        AppLogger.debug('Test tile download successful');
+        return true;
+      } else {
+        AppLogger.debug('Test tile download failed: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      AppLogger.error('Test tile download error', e);
+      return false;
+    }
+  }
 }
 

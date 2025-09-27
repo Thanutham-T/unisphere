@@ -220,7 +220,7 @@ class _OfflineMapDownloadDialogState extends State<OfflineMapDownloadDialog> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: colorScheme.surfaceVariant,
+                color: colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Column(
@@ -257,7 +257,7 @@ class _OfflineMapDownloadDialogState extends State<OfflineMapDownloadDialog> {
             if (_isDownloading || _progress > 0) ...[
               LinearProgressIndicator(
                 value: _progress,
-                backgroundColor: colorScheme.surfaceVariant,
+                backgroundColor: colorScheme.surfaceContainerHighest,
                 valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
               ),
               const SizedBox(height: 8),
@@ -368,7 +368,7 @@ class _OfflineMapStatusState extends State<OfflineMapStatus> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: hasCache ? colorScheme.primaryContainer : colorScheme.surfaceVariant,
+        color: hasCache ? colorScheme.primaryContainer : colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(

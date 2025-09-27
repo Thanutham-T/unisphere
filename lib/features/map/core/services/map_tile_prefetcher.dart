@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:latlong2/latlong.dart';
+import '../../../../core/logging/app_logger.dart';
 
 class MapTilePrefetcher {
   static const String _tileUrlTemplate = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -56,7 +57,7 @@ class MapTilePrefetcher {
       final totalTiles = calculateTileCount(bounds, minZoom, maxZoom);
       int processedTiles = 0;
       
-      print('เริ่มดาวน์โหลด $totalTiles tiles สำหรับพื้นที่ออฟไลน์');
+      AppLogger.debug('เริ่มดาวน์โหลด $totalTiles tiles สำหรับพื้นที่ออฟไลน์');
       
       // สร้าง semaphore เพื่อจำกัดการดาวน์โหลดพร้อมกัน
       final semaphore = <Future>[];
@@ -115,7 +116,7 @@ class MapTilePrefetcher {
       return _failedTiles < (totalTiles * 0.1); // สำเร็จถ้า failed น้อยกว่า 10%
       
     } catch (e) {
-      print('เกิดข้อผิดพลาดในการดาวน์โหลด: $e');
+      AppLogger.debug('เกิดข้อผิดพลาดในการดาวน์โหลด: $e');
       return false;
     }
   }
@@ -123,13 +124,13 @@ class MapTilePrefetcher {
   /// พิมพ์สรุปผลการดาวน์โหลด
   void _printSummary(int processed, int total) {
     final successfulDownloads = processed - _skippedTiles - _failedTiles;
-    print('--- สรุปการดาวน์โหลด ---');
-    print('Tiles ทั้งหมด: $total');
-    print('ดาวน์โหลดสำเร็จ: $successfulDownloads');
-    print('ข้ามไป (มีอยู่แล้ว): $_skippedTiles');
-    print('ล้มเหลว: $_failedTiles');
-    print('ขนาดรวม: ${totalDownloadedMB.toStringAsFixed(2)} MB');
-    print('------------------------');
+    AppLogger.debug('--- สรุปการดาวน์โหลด ---');
+    AppLogger.debug('Tiles ทั้งหมด: $total');
+    AppLogger.debug('ดาวน์โหลดสำเร็จ: $successfulDownloads');
+    AppLogger.debug('ข้ามไป (มีอยู่แล้ว): $_skippedTiles');
+    AppLogger.debug('ล้มเหลว: $_failedTiles');
+    AppLogger.debug('ขนาดรวม: ${totalDownloadedMB.toStringAsFixed(2)} MB');
+    AppLogger.debug('------------------------');
   }
 
   // สถิติการดาวน์โหลด
@@ -186,7 +187,7 @@ class MapTilePrefetcher {
         }
         
         if (retryCount > 0) {
-          print('ดาวน์โหลด tile $x,$y,$zoom สำเร็จหลังจาก retry $retryCount ครั้ง (${response.bodyBytes.length} bytes)');
+          AppLogger.debug('ดาวน์โหลด tile $x,$y,$zoom สำเร็จหลังจาก retry $retryCount ครั้ง (${response.bodyBytes.length} bytes)');
         }
       } else {
         throw Exception('HTTP ${response.statusCode}');
@@ -197,14 +198,14 @@ class MapTilePrefetcher {
         // พยายามใหม่
         await Future.delayed(retryDelays[retryCount]);
         if (!_isCancelled) {
-          print('พยายามดาวน์โหลด tile $x,$y,$zoom ใหม่ ครั้งที่ ${retryCount + 1}');
+          AppLogger.debug('พยายามดาวน์โหลด tile $x,$y,$zoom ใหม่ ครั้งที่ ${retryCount + 1}');
           return _downloadTile(x, y, zoom, retryCount: retryCount + 1);
         }
       }
       
       // ล้มเหลวสุดท้าย
       _failedTiles++;
-      print('ไม่สามารถดาวน์โหลด tile $x,$y,$zoom หลังจากพยายาม ${retryCount + 1} ครั้ง: $e');
+      AppLogger.debug('ไม่สามารถดาวน์โหลด tile $x,$y,$zoom หลังจากพยายาม ${retryCount + 1} ครั้ง: $e');
     }
   }
 
@@ -240,7 +241,7 @@ class MapTilePrefetcher {
         await cacheDir.delete(recursive: true);
       }
     } catch (e) {
-      print('ไม่สามารถลบแคช: $e');
+      AppLogger.debug('ไม่สามารถลบแคช: $e');
     }
   }
 

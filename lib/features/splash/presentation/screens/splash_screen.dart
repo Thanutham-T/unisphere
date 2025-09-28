@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:splash_master/splash_master.dart';
+import 'package:unisphere/config/routes/app_router.dart';
 
 import 'package:unisphere/core/cubits/fullscreen_cubit.dart';
 import 'package:unisphere/core/services/key_value_storage_service.dart';
@@ -17,10 +18,10 @@ class SplashScreen extends StatelessWidget {
     context.read<FullscreenCubit>().exitFullscreen();
     if (token != null && token.isNotEmpty) {
       // User is logged in, go to dashboard
-      context.goToDashboard();
+      DashboardRoute().go(context);
     } else {
       // User not logged in, go to login
-      context.goToLogin();
+      LoginRoute().go(context);
     }
   }
 

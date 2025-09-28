@@ -39,6 +39,9 @@ dependencies:
   path: ^1.9.0
   smooth_page_indicator: ^1.2.1
   lottie: ^3.3.2
+  url_launcher: ^6.3.2
+  speech_to_text: ^7.0.0
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:

@@ -21,8 +21,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _emailController = TextEditingController(text: ''); // ใส่ email จริงจาก database
+  final _passwordController = TextEditingController(text: ''); // ใส่ password จริงจาก database
   bool _isPasswordVisible = false;
 
   @override
@@ -77,13 +77,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       final client = http.Client();
-      final url = Uri.parse('${ApiConstants.baseUrl}/api/v1/auth/login');
       
-      AppLogger.debug('🌐 Testing connection to: $url');
+      AppLogger.debug('🌐 Step 1: Getting constants...');
+      final baseUrl = ApiConstants.baseUrl;
+      final loginEndpoint = ApiConstants.loginEndpoint;
+      
+      AppLogger.debug('🌐 Base URL: $baseUrl');
+      AppLogger.debug('🌐 Login Endpoint: $loginEndpoint');
+      
+      final url = Uri.parse('$baseUrl$loginEndpoint');
+      AppLogger.debug('🌐 Full URL: $url');
       
       final testData = {
-        'username': 'test@example.com', // เปลี่ยนจาก email เป็น username
-        'password': 'test123'
+        'email': 'user@example.com', // ใช้ email ตาม FastAPI spec
+        'password': 'string'
       };
 
       final response = await client.post(
@@ -159,33 +166,85 @@ class _LoginScreenState extends State<LoginScreen> {
                   Column(
                     children: [
                       Container(
-              width: 300,
-              height: 100,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.school,
-                  size: 60,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-              ),
-            ),
+                        width: 140,
+                        height: 140,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          // Subtle theme-aware border without affecting logo visibility
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Theme.of(context).colorScheme.surface
+                              : Colors.grey.shade50,
+                          border: Border.all(
+                            color: Theme.of(context).brightness == Brightness.dark
+                                ? Theme.of(context).colorScheme.outline.withOpacity(0.2)
+                                : Colors.grey.shade200,
+                            width: 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.black.withOpacity(0.3)
+                                  : Colors.grey.withOpacity(0.2),
+                              spreadRadius: 3,
+                              blurRadius: 15,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.all(8.0),
+                        child: ClipOval(
+                          child: Container(
+                            width: 124,
+                            height: 124,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              // Use a consistent background that works for both themes
+                              color: Colors.white,
+                            ),
+                            child: Image.asset(
+                              'assets/icons/unisphere_icon.png',
+                              width: 124,
+                              height: 124,
+                              fit: BoxFit.contain,
+                              filterQuality: FilterQuality.high,
+                              errorBuilder: (context, error, stackTrace) {
+                                // Fallback to icon if image fails to load
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Theme.of(context).colorScheme.primary,
+                                        Theme.of(context).colorScheme.secondary,
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                  ),
+                                  child: Icon(
+                                    Icons.school,
+                                    size: 60,
+                                    color: Theme.of(context).colorScheme.onPrimary,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
                       const SizedBox(height: 24),
                       Text(
-              'Unisphere',
-              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
+                        'UNISPHERE',
+                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
                       const SizedBox(height: 8),
                       Text(
-                        'เข้าสู่ระบบเพื่อเริ่มต้นการใช้งาน',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.onBackground.withOpacity(0.6),
+                        'เข้าสู่ระบบเพื่อดำเนินการต่อ',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                         ),
                       ),
                     ],
@@ -266,22 +325,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   
                   const SizedBox(height: 16),
-                  
-                  // Forgot Password
-                  TextButton(
-                    onPressed: () {
-                      // TODO: Navigate to forgot password screen
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('ฟีเจอร์ลืมรหัสผ่านจะเปิดใช้งานเร็ว ๆ นี้'),
-                        ),
-                      );
-                    },
-                    child: const Text('ลืมรหัสผ่าน?'),
-                  ),
-                  
-                  const SizedBox(height: 32),
-                  
                   // Register Link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -291,7 +334,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           context.goToRegister();
                         },
-                        child: const Text('สมัครสมาชิก'),
+                        child: const Text('สร้างบัญชีใหม่'),
                       ),
                     ],
                   ),

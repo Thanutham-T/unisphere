@@ -42,6 +42,8 @@ dependencies:
   url_launcher: ^6.3.2
   speech_to_text: ^7.0.0
   permission_handler: ^11.3.1
+  barcode_widget: ^2.0.4
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
@@ -68,7 +70,6 @@ flutter:
   uses-material-design: true
   generate: true
   assets:
-    - assets/images/
     - assets/icons/
     - assets/animations/
     - .env

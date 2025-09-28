@@ -23,6 +23,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<RegisterRequested>(_onRegisterRequested);
     on<LogoutRequested>(_onLogoutRequested);
     on<AuthStatusChecked>(_onAuthStatusChecked);
+    on<LoadCurrentUserRequested>(_onLoadCurrentUserRequested);
   }
 
   Future<void> _onLoginRequested(
@@ -54,14 +55,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoading());
 
-    final result = await registerUseCase(
-      RegisterParams(
-        email: event.email,
-        password: event.password,
-        firstName: event.firstName,
-        lastName: event.lastName,
-      ),
-    );
+    final result = await registerUseCase(event.request);
 
     result.fold(
       (failure) => emit(AuthError(message: failure.message)),
@@ -95,8 +89,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (failure) => emit(const AuthUnauthenticated()),
       (isLoggedIn) {
         if (isLoggedIn) {
-          // TODO: Get current user and emit AuthAuthenticated
+          // Auto-load current user when authenticated
+          add(const LoadCurrentUserRequested());
+        } else {
           emit(const AuthUnauthenticated());
+        }
+      },
+    );
+  }
+
+  Future<void> _onLoadCurrentUserRequested(
+    LoadCurrentUserRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoading());
+
+    final result = await authRepository.getCurrentUser();
+
+    result.fold(
+      (failure) => emit(AuthError(message: failure.message)),
+      (user) {
+        if (user != null) {
+          emit(AuthAuthenticated(user: user));
         } else {
           emit(const AuthUnauthenticated());
         }

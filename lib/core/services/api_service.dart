@@ -94,12 +94,17 @@ class ApiService {
     String? accessToken;
     if (_storageService != null) {
       accessToken = await _storageService.getEncryptedString(ApiConstants.accessTokenKey);
+      AppLogger.debug('🔑 Retrieved access token: ${accessToken?.substring(0, 20)}...'); // Show first 20 chars
+    } else {
+      AppLogger.debug('❌ No storage service available for auth');
     }
 
     final authHeaders = <String, String>{
       if (accessToken != null) 'Authorization': 'Bearer $accessToken',
       if (headers != null) ...headers,
     };
+    
+    AppLogger.debug('🔐 Auth Headers: ${authHeaders.keys.toList()}');
 
     return post(endpoint, data, headers: authHeaders, useFormData: useFormData);
   }
@@ -127,6 +132,29 @@ class ApiService {
     }
   }
 
+  Future<Map<String, dynamic>> getAuthenticated(
+    String endpoint, {
+    Map<String, String>? headers,
+  }) async {
+    // Get access token from storage
+    String? accessToken;
+    if (_storageService != null) {
+      accessToken = await _storageService.getEncryptedString(ApiConstants.accessTokenKey);
+      AppLogger.debug('🔑 Retrieved access token for GET: ${accessToken?.substring(0, 20)}...'); // Show first 20 chars
+    } else {
+      AppLogger.debug('❌ No storage service available for auth');
+    }
+
+    final authHeaders = <String, String>{
+      if (accessToken != null) 'Authorization': 'Bearer $accessToken',
+      if (headers != null) ...headers,
+    };
+    
+    AppLogger.debug('🔐 Auth Headers for GET: ${authHeaders.keys.toList()}');
+
+    return get(endpoint, headers: authHeaders);
+  }
+
   Map<String, dynamic> _handleResponse(http.Response response) {
     AppLogger.debug('🔍 Handling Response: ${response.statusCode}');
     
@@ -134,7 +162,15 @@ class ApiService {
       case 200:
       case 201:
         AppLogger.debug('✅ Success: ${response.statusCode}');
-        return jsonDecode(response.body);
+        AppLogger.debug('📄 Raw Response Body: ${response.body}');
+        try {
+          final decoded = jsonDecode(response.body);
+          AppLogger.debug('📋 Parsed JSON: $decoded');
+          return decoded;
+        } catch (e) {
+          AppLogger.debug('❌ JSON Parse Error: $e');
+          throw ServerException('ข้อมูลจากเซิร์ฟเวอร์ไม่ถูกต้อง: $e');
+        }
       case 400:
         AppLogger.debug('❌ Bad Request (400): ${response.body}');
         throw BadRequestException('ข้อมูลที่ส่งไม่ถูกต้อง');

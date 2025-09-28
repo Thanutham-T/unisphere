@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'app_settings_state.freezed.dart';
+class AppSettingsState {
+  final ThemeMode themeMode;
+  final Locale? locale;
 
+  const AppSettingsState({
+    required this.themeMode,
+    this.locale,
+  });
 
-@freezed
-abstract class AppSettingsState with _$AppSettingsState {
-  const factory AppSettingsState({
-    required ThemeMode themeMode,
+  AppSettingsState copyWith({
+    ThemeMode? themeMode,
     Locale? locale,
-  }) = _AppSettingsState;
+  }) {
+    return AppSettingsState(
+      themeMode: themeMode ?? this.themeMode,
+      locale: locale ?? this.locale,
+    );
+  }
 }

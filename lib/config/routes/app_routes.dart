@@ -37,6 +37,7 @@ abstract final class AppRoutes {
 // Route navigation extensions
 extension AppNavigator on BuildContext {
   void goToDashboard() => go(Routes.dashboard);
+  void goToHome() => go(Routes.dashboard); // Alias for dashboard
   void goToLogin() => go(Routes.login);
   void goToRegister() => go(Routes.register);
   void goToSplash() => go(Routes.splash);

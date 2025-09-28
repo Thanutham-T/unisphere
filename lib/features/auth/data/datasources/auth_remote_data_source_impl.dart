@@ -16,7 +16,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     final response = await apiService.post(
       ApiConstants.loginEndpoint,
       request.toJson(),
-      useFormData: true, // ใช้ form data สำหรับ OAuth2
+      // ส่ง JSON สำหรับ FastAPI
     );
     
     return LoginResponse.fromJson(response);
@@ -38,5 +38,19 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       ApiConstants.logoutEndpoint,
       {},
     );
+  }
+
+  @override
+  Future<LoginResponse> getCurrentUser() async {
+    final response = await apiService.getAuthenticated(
+      ApiConstants.getCurrentUserEndpoint,
+    );
+    
+    // Backend ส่งข้อมูล user โดยตรง ต้อง wrap ในโครงสร้าง LoginResponse
+    final wrappedResponse = {
+      'user': response,
+    };
+    
+    return LoginResponse.fromJson(wrappedResponse);
   }
 }

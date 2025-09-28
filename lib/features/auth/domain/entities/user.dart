@@ -5,6 +5,14 @@ class User extends Equatable {
   final String email;
   final String firstName;
   final String lastName;
+  final String? phoneNumber;
+  final String? studentId;
+  final String? faculty;
+  final String? department;
+  final String? major;
+  final String? curriculum;
+  final String? educationLevel;
+  final String? campus;
   final String? profileImage;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -14,6 +22,14 @@ class User extends Equatable {
     required this.email,
     required this.firstName,
     required this.lastName,
+    this.phoneNumber,
+    this.studentId,
+    this.faculty,
+    this.department,
+    this.major,
+    this.curriculum,
+    this.educationLevel,
+    this.campus,
     this.profileImage,
     required this.createdAt,
     required this.updatedAt,
@@ -25,6 +41,14 @@ class User extends Equatable {
         email,
         firstName,
         lastName,
+        phoneNumber,
+        studentId,
+        faculty,
+        department,
+        major,
+        curriculum,
+        educationLevel,
+        campus,
         profileImage,
         createdAt,
         updatedAt,

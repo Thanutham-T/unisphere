@@ -44,3 +44,7 @@ class LogoutRequested extends AuthEvent {
 class AuthStatusChecked extends AuthEvent {
   const AuthStatusChecked();
 }
+
+class LoadCurrentUserRequested extends AuthEvent {
+  const LoadCurrentUserRequested();
+}

@@ -58,9 +58,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
-  void _goToDashboard() {
+  void _goToLogin() {
     context.read<FullscreenCubit>().exitFullscreen();
-    DashboardRoute().go(context);
+    LoginRoute().go(context);
   }
 
   void _nextPage() {
@@ -71,7 +71,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      _goToDashboard();
+      _goToLogin();
     }
   }
 
@@ -168,7 +168,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   // Skip Button
                   if (_currentPage != pages.length - 1)
                     TextButton(
-                      onPressed: _goToDashboard,
+                      onPressed: _goToLogin,
                       child: Text(
                         localizations.onboarding_button_skip,
                         style: const TextStyle(

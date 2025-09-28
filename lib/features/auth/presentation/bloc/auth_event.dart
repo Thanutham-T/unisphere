@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../data/models/register_request.dart';
 
 sealed class AuthEvent extends Equatable {
   const AuthEvent();
@@ -21,20 +22,14 @@ class LoginRequested extends AuthEvent {
 }
 
 class RegisterRequested extends AuthEvent {
-  final String email;
-  final String password;
-  final String firstName;
-  final String lastName;
+  final RegisterRequest request;
 
   const RegisterRequested({
-    required this.email,
-    required this.password,
-    required this.firstName,
-    required this.lastName,
+    required this.request,
   });
 
   @override
-  List<Object?> get props => [email, password, firstName, lastName];
+  List<Object?> get props => [request];
 }
 
 class LogoutRequested extends AuthEvent {

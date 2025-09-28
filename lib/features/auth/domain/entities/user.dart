@@ -5,6 +5,11 @@ class User extends Equatable {
   final String email;
   final String firstName;
   final String lastName;
+  final String? profileImage;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  
+  // Additional fields for student profile
   final String? phoneNumber;
   final String? studentId;
   final String? faculty;
@@ -13,15 +18,15 @@ class User extends Equatable {
   final String? curriculum;
   final String? educationLevel;
   final String? campus;
-  final String? profileImage;
-  final DateTime createdAt;
-  final DateTime updatedAt;
 
   const User({
     required this.id,
     required this.email,
     required this.firstName,
     required this.lastName,
+    this.profileImage,
+    required this.createdAt,
+    required this.updatedAt,
     this.phoneNumber,
     this.studentId,
     this.faculty,
@@ -30,9 +35,6 @@ class User extends Equatable {
     this.curriculum,
     this.educationLevel,
     this.campus,
-    this.profileImage,
-    required this.createdAt,
-    required this.updatedAt,
   });
 
   @override
@@ -41,6 +43,9 @@ class User extends Equatable {
         email,
         firstName,
         lastName,
+        profileImage,
+        createdAt,
+        updatedAt,
         phoneNumber,
         studentId,
         faculty,
@@ -49,8 +54,5 @@ class User extends Equatable {
         curriculum,
         educationLevel,
         campus,
-        profileImage,
-        createdAt,
-        updatedAt,
       ];
 }

@@ -55,14 +55,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoading());
 
-    final result = await registerUseCase(
-      RegisterParams(
-        email: event.email,
-        password: event.password,
-        firstName: event.firstName,
-        lastName: event.lastName,
-      ),
-    );
+    final result = await registerUseCase(event.request);
 
     result.fold(
       (failure) => emit(AuthError(message: failure.message)),

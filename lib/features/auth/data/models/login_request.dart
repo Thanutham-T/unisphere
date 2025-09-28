@@ -15,9 +15,6 @@ class LoginRequest {
   factory LoginRequest.fromJson(Map<String, dynamic> json) => 
       _$LoginRequestFromJson(json);
 
-  // FastAPI ปกติจะใช้ username field สำหรับ login
-  Map<String, dynamic> toJson() => {
-    'username': email, // ส่ง email เป็น username
-    'password': password,
-  };
+  // FastAPI ปกติจะใช้ username field สำหรับ login  
+  Map<String, dynamic> toJson() => _$LoginRequestToJson(this);
 }

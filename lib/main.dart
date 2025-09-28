@@ -14,11 +14,28 @@ import 'package:unisphere/core/cubits/app_settings_cubit.dart';
 import 'package:unisphere/core/cubits/app_settings_state.dart';
 import 'package:unisphere/injector.dart' as di;
 import 'package:unisphere/l10n/app_localizations.dart';
+import 'dart:io';
+
+/// ======== ACCEPT ALL CERT (TESTING DEV ONLY) ========
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true; // Accept all certs
+  }
+}
+/// ======== ACCEPT ALL CERT (TESTING DEV ONLY) ========
+
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  
+
+  /// ======== ACCEPT ALL CERT (TESTING DEV ONLY) ========
+  HttpOverrides.global = MyHttpOverrides();
+  /// ======== ACCEPT ALL CERT (TESTING DEV ONLY) ========
+
   // Load environment variables
   await dotenv.load(fileName: ".env");
   

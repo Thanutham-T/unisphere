@@ -13,6 +13,7 @@ class ApiConstants {
   static String get refreshTokenEndpoint => '/$apiVersion/auth/refresh';
   static String get logoutEndpoint => '/$apiVersion/auth/logout';
   static String get getCurrentUserEndpoint => '/$apiVersion/auth/me';
+  static String get updateProfileEndpoint => '/$apiVersion/auth/profile';
   
   // Configuration
   static int get apiTimeout => int.tryParse(dotenv.env['API_TIMEOUT'] ?? '30') ?? 30;

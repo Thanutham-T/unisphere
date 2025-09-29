@@ -46,7 +46,7 @@ class RouteBuilders {
   }
 
   static Widget buildCourseScreen() {
-    return const CourseScreen();
+    return CourseScreen();
   }
 
   static Widget buildScheduleScreen() {

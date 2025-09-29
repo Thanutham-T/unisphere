@@ -62,7 +62,7 @@ class CustomBottomNavBar extends StatelessWidget {
             BottomNavigationBarItem(
               icon: ImageIcon(Assets.icons.event.provider()),
               activeIcon: ImageIcon(Assets.icons.event.provider()),
-              label: localizations.menu_schedule,
+              label: localizations.menu_event,
             ),
             BottomNavigationBarItem(
               icon: ImageIcon(Assets.icons.group.provider()),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'map_search_bar.dart';
-import 'map_category_icon.dart';
 import 'map_search_result_item.dart';
 
 class MapBottomSheet extends StatelessWidget {
@@ -152,19 +151,8 @@ class MapBottomSheet extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
           height: 120,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: categoryPlaces.length,
-            separatorBuilder: (context, index) => const SizedBox(width: 16),
-            itemBuilder: (context, index) {
-              final place = categoryPlaces[index];
-              return MapCategoryIcon(
-                icon: place['icon'],
-                label: place['name'],
-                isSelected: false,
-              );
-            },
-          ),
+          // ลบรายการภายใน "คลัง" ให้เป็นพื้นที่ว่าง ๆ โดยไม่แสดงไอคอนใด ๆ
+          child: const SizedBox.shrink(),
         ),
         const SizedBox(height: 20),
       ],

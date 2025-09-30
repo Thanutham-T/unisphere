@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/place_entity.dart';
+import '../../core/config/api_config.dart';
+import '../../data/services/backend_collection_service.dart';
 import '../bloc/map_bloc.dart';
 import '../bloc/map_event.dart';
 
@@ -136,6 +138,41 @@ class LocationDetailsBottomSheet extends StatelessWidget {
                         },
                         icon: const Icon(Icons.directions_car),
                         label: const Text('ขับรถ'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          final service = BackendCollectionService(
+                            baseUrl: ApiConfig.baseUrl,
+                            accessToken: ApiConfig.accessToken,
+                          );
+                          try {
+                            await service.savePlace(
+                              name: place.name,
+                              description: place.description,
+                              latitude: place.location.latitude,
+                              longitude: place.location.longitude,
+                              category: place.category,
+                              imageUrl: place.imageUrl,
+                              additionalInfo: place.additionalInfo,
+                            );
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('บันทึกลงคลังแล้ว')),
+                              );
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('บันทึกไม่สำเร็จ: $e')),
+                              );
+                            }
+                          }
+                        },
+                        icon: const Icon(Icons.bookmark_add_outlined),
+                        label: const Text('บันทึก'),
                       ),
                     ),
                   ],

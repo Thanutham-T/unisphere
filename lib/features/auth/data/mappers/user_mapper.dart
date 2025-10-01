@@ -10,6 +10,7 @@ extension UserMapper on UserData {
       lastName: lastName ?? '', // ใช้ empty string ถ้าเป็น null
       phoneNumber: phoneNumber,
       studentId: studentId,
+      role: role,
       faculty: faculty,
       department: department,
       major: major,
@@ -22,7 +23,7 @@ extension UserMapper on UserData {
     );
   }
   
-  static User fromMap(Map<String, dynamic> json) {
+  static User fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id']?.toString() ?? '',
       email: json['email'] ?? '',
@@ -30,13 +31,14 @@ extension UserMapper on UserData {
       lastName: json['last_name'] ?? '',
       phoneNumber: json['phone_number'],
       studentId: json['student_id'],
+      role: json['role'],
       faculty: json['faculty'],
       department: json['department'],
       major: json['major'],
       curriculum: json['curriculum'],
       educationLevel: json['education_level'],
       campus: json['campus'],
-      profileImage: json['profile_image_url'],
+      profileImage: json['profile_image_url'], // ตอนนี้ backend return แล้ว ✅
       createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : DateTime.now(),
       updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : DateTime.now(),
     );

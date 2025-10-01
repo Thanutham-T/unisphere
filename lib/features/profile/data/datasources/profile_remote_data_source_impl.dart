@@ -25,7 +25,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         requiresAuth: true,
       );
 
-      final user = UserMapper.fromMap(response);
+      final user = UserMapper.fromJson(response);
       return Right(user);
     } catch (e) {
       print('❌ Profile Update Error: $e');

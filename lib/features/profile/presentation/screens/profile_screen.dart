@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 
 import '../../../auth/presentation/bloc/auth_bloc.dart';
@@ -14,6 +13,10 @@ import '../widgets/virtual_student_card.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../bloc/profile_bloc.dart';
 import '../../data/models/update_profile_request.dart';
+import '../../../../core/utils/global_error_handler.dart';
+import '../../../../core/errors/exceptions.dart';
+import '../../../../core/services/image_upload_service.dart';
+import '../../../../injector.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -24,7 +27,9 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   File? _profileImage;
+  String? _uploadedImageUrl; // เก็บ URL ที่อัปโหลดแล้ว
   final ImagePicker _picker = ImagePicker();
+  bool _isUploading = false;
 
   @override
   void initState() {
@@ -33,20 +38,81 @@ class _ProfileScreenState extends State<ProfileScreen> {
     context.read<AuthBloc>().add(const LoadCurrentUserRequested());
   }
 
-  Future<void> _pickImage() async {
-    // Request permission
-    if (Platform.isAndroid || Platform.isIOS) {
-      final status = await Permission.photos.request();
-      if (!status.isGranted) {
+  Future<void> _uploadProfileImage(File imageFile) async {
+    if (!mounted) return;
+    
+    setState(() {
+      _isUploading = true;
+    });
+
+    try {
+      final imageUploadService = getIt<ImageUploadService>();
+      final imageUrl = await imageUploadService.uploadEventImage(imageFile);
+      
+      if (imageUrl.isNotEmpty && mounted) {
+        print('✅ Image uploaded successfully: $imageUrl');
+        
+        // เก็บ URL ชั่วคราวเพื่อแสดงทันที
+        setState(() {
+          _uploadedImageUrl = imageUrl;
+          _profileImage = null; // Clear local file
+        });
+        
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('จำเป็นต้องมีสิทธิ์ในการเข้าถึงแกลลอรี่เพื่อเลือกรูปภาพ')),
+            const SnackBar(
+              content: Text('อัปโหลดรูปโปรไฟล์สำเร็จ'),
+              backgroundColor: Colors.green,
+            ),
           );
         }
-        return;
+        
+        // อัปเดต profile ผ่าน API
+        final currentUser = context.read<AuthBloc>().state;
+        if (currentUser is AuthAuthenticated) {
+          final updateRequest = UpdateProfileRequest(
+            profileImageUrl: imageUrl,
+          );
+          
+          context.read<ProfileBloc>().add(UpdateProfileRequested(updateRequest));
+          print('📝 Profile update request sent to backend');
+          
+          // Refresh user data หลังจาก backend update
+          Future.delayed(const Duration(milliseconds: 1000), () {
+            if (mounted) {
+              context.read<AuthBloc>().add(const LoadCurrentUserRequested());
+              // Clear local URL เพื่อใช้จาก backend
+              setState(() {
+                _uploadedImageUrl = null;
+              });
+              print('🔄 Refreshing user data from backend');
+            }
+          });
+        }
+        
+      } else {
+        throw Exception('ไม่สามารถอัปโหลดรูปภาพได้');
+      }
+    } catch (e) {
+      print('❌ Upload Profile Image Error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isUploading = false;
+        });
       }
     }
+  }
 
+  Future<void> _pickImage() async {
     if (mounted) {
       showModalBottomSheet(
         context: context,
@@ -83,15 +149,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: const Text('ถ่ายภาพ'),
                 onTap: () async {
                   Navigator.pop(context);
-                  final XFile? image = await _picker.pickImage(
-                    source: ImageSource.camera,
-                    imageQuality: 80,
-                  );
-                  if (image != null && mounted) {
-                    setState(() {
-                      _profileImage = File(image.path);
-                    });
-                  }
+                  await _pickImageFromCamera();
                 },
               ),
               ListTile(
@@ -99,15 +157,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: const Text('เลือกจากแกลลอรี่'),
                 onTap: () async {
                   Navigator.pop(context);
-                  final XFile? image = await _picker.pickImage(
-                    source: ImageSource.gallery,
-                    imageQuality: 80,
-                  );
-                  if (image != null && mounted) {
-                    setState(() {
-                      _profileImage = File(image.path);
-                    });
-                  }
+                  await _pickImageFromGallery();
                 },
               ),
               const SizedBox(height: 16),
@@ -115,6 +165,54 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       );
+    }
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 80,
+      );
+      
+      if (image != null && mounted) {
+        await _uploadProfileImage(File(image.path));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('เกิดข้อผิดพลาดในการเลือกรูปภาพ: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _pickImageFromCamera() async {
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.camera,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 80,
+      );
+      
+      if (image != null && mounted) {
+        await _uploadProfileImage(File(image.path));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('เกิดข้อผิดพลาดในการถ่ายรูป: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -140,13 +238,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 context.goToLogin();
               }
               if (state is AuthError) {
-                // แสดง error message
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: Colors.red,
-                  ),
-                );
+                // Check if it's a token expiration error
+                if (GlobalErrorHandler.isTokenExpiredError(state.message)) {
+                  // Handle auto logout for token expiration
+                  GlobalErrorHandler.handleUnauthorizedException(
+                    context,
+                    UnauthorizedException(state.message),
+                  );
+                } else {
+                  // แสดง error message สำหรับ error อื่นๆ
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
               }
             },
           ),
@@ -161,6 +268,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 );
                 // Refresh current user data
                 context.read<AuthBloc>().add(const LoadCurrentUserRequested());
+                print('🔄 Profile updated, refreshing user data');
               } else if (state is ProfileError) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -194,7 +302,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         faculty: user.faculty ?? 'ไม่ระบุ',
                         major: user.major ?? 'ไม่ระบุ',
                         profileImage: _profileImage,
+                        profileImageUrl: _uploadedImageUrl ?? user.profileImage, // ใช้รูปที่อัปโหลดใหม่ก่อน
                         onImageTap: _pickImage,
+                        isUploading: _isUploading,
                       ),
                     ),
                     const SizedBox(height: 24),

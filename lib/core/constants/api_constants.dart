@@ -13,6 +13,20 @@ class ApiConstants {
   static String get refreshTokenEndpoint => '/$apiVersion/auth/refresh';
   static String get logoutEndpoint => '/$apiVersion/auth/logout';
   static String get getCurrentUserEndpoint => '/$apiVersion/auth/me';
+  static String get updateProfileEndpoint => '/$apiVersion/auth/profile';
+  
+  // Event endpoints
+  static String get eventsEndpoint => '/$apiVersion/events';
+  static String eventByIdEndpoint(String eventId) => '/$apiVersion/events/$eventId';
+  static String get userRegisteredEventsEndpoint => '/$apiVersion/events/user/registered';
+  
+  // Announcement endpoints
+  static String get announcementsEndpoint => '/$apiVersion/announcements';
+  static String announcementByIdEndpoint(String announcementId) => '/$apiVersion/announcements/$announcementId';
+  
+  // Upload endpoints
+  static String get uploadImageEndpoint => '/$apiVersion/upload/image';
+  static String uploadedImageEndpoint(String filename) => '/$apiVersion/upload/image/$filename';
   
   // Configuration
   static int get apiTimeout => int.tryParse(dotenv.env['API_TIMEOUT'] ?? '30') ?? 30;

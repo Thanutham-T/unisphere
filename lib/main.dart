@@ -9,7 +9,11 @@ import 'package:unisphere/config/routes/app_router.dart';
 import 'package:unisphere/config/themes/app_theme.dart';
 import 'package:unisphere/core/services/key_value_storage_service.dart';
 import 'package:unisphere/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:unisphere/features/auth/presentation/bloc/auth_event.dart';
 import 'package:unisphere/features/map/presentation/bloc/map_bloc.dart';
+import 'package:unisphere/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:unisphere/features/event/presentation/bloc/event_bloc.dart';
+import 'package:unisphere/features/announcement/presentation/bloc/announcement_bloc.dart';
 import 'package:unisphere/core/cubits/app_settings_cubit.dart';
 import 'package:unisphere/core/cubits/app_settings_state.dart';
 import 'package:unisphere/injector.dart' as di;
@@ -63,11 +67,28 @@ class MyApp extends StatelessWidget {
       providers: [
         // AuthBloc จาก branch Atom
         BlocProvider<AuthBloc>(
-          create: (context) => di.getIt<AuthBloc>(),
+          create: (context) {
+            final authBloc = di.getIt<AuthBloc>();
+            // Check authentication status when app starts
+            authBloc.add(const AuthStatusChecked());
+            return authBloc;
+          },
         ),
         // MapBloc for map functionality
         BlocProvider<MapBloc>(
           create: (context) => di.getIt<MapBloc>(),
+        ),
+        // ProfileBloc for profile functionality
+        BlocProvider<ProfileBloc>(
+          create: (context) => di.getIt<ProfileBloc>(),
+        ),
+        // EventBloc for event functionality
+        BlocProvider<EventBloc>(
+          create: (context) => di.getIt<EventBloc>(),
+        ),
+        // AnnouncementBloc for announcement functionality
+        BlocProvider<AnnouncementBloc>(
+          create: (context) => di.getIt<AnnouncementBloc>(),
         ),
         // AppSettingsCubit จาก development (แทน ThemeCubit)
         BlocProvider<AppSettingsCubit>(

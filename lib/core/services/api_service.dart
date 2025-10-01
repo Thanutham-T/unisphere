@@ -192,6 +192,142 @@ class ApiService {
     }
   }
 
+  /// PATCH request with authentication support  
+  Future<Map<String, dynamic>> patch(
+    String endpoint,
+    Map<String, dynamic> data, {
+    Map<String, String>? headers,
+    bool requiresAuth = false,
+  }) async {
+    try {
+      final url = Uri.parse('${ApiConstants.baseUrl}$endpoint');
+      AppLogger.debug('🔄 PATCH Request: $url');
+
+      Map<String, String> requestHeaders = Map.from(ApiConstants.defaultHeaders);
+      if (headers != null) {
+        requestHeaders.addAll(headers);
+      }
+
+      // Add authorization header if required
+      if (requiresAuth && _storageService != null) {
+        final accessToken = await _storageService.getEncryptedString(ApiConstants.accessTokenKey);
+        if (accessToken != null) {
+          requestHeaders['Authorization'] = 'Bearer $accessToken';
+          AppLogger.debug('🔑 Added Bearer token to PATCH request');
+        } else {
+          AppLogger.debug('❌ No access token available for authenticated PATCH request');
+          throw UnauthorizedException('ไม่พบ token สำหรับการเข้าถึง');
+        }
+      }
+
+      final response = await _client.patch(
+        url,
+        headers: requestHeaders,
+        body: jsonEncode(data),
+      ).timeout(Duration(seconds: ApiConstants.apiTimeout));
+
+      AppLogger.debug('📨 PATCH Response: ${response.statusCode}');
+
+      if (ApiConstants.enableApiLogging) {
+        AppLogger.debug('📄 PATCH Response Body: ${response.body}');
+      }
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return response.body.isNotEmpty 
+            ? jsonDecode(response.body) as Map<String, dynamic>
+            : <String, dynamic>{};
+      } else {
+        // Handle HTTP errors
+        switch (response.statusCode) {
+          case 401:
+            throw UnauthorizedException('ไม่มีสิทธิ์เข้าถึง');
+          case 403:
+            throw ForbiddenException('ไม่มีสิทธิ์เข้าถึง');
+          case 404:
+            throw NotFoundException('ไม่พบข้อมูลที่ต้องการ');
+          case 500:
+            throw ServerException('เซิร์ฟเวอร์เกิดข้อผิดพลาด');
+          default:
+            throw ServerException('เกิดข้อผิดพลาดที่ไม่คาดคิด (${response.statusCode})');
+        }
+      }
+    } on SocketException {
+      AppLogger.debug('📡 PATCH Network error');
+      throw NetworkException('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
+    } catch (e) {
+      AppLogger.debug('❌ PATCH API Error: $e');
+      throw ServerException('เกิดข้อผิดพลาดในการเชื่อมต่อ: ${e.toString()}');
+    }
+  }
+
+  /// PUT request with authentication support  
+  Future<Map<String, dynamic>> put(
+    String endpoint,
+    Map<String, dynamic> data, {
+    Map<String, String>? headers,
+    bool requiresAuth = false,
+  }) async {
+    try {
+      final url = Uri.parse('${ApiConstants.baseUrl}$endpoint');
+      AppLogger.debug('🔄 PUT Request: $url');
+
+      Map<String, String> requestHeaders = Map.from(ApiConstants.defaultHeaders);
+      if (headers != null) {
+        requestHeaders.addAll(headers);
+      }
+
+      // Add authorization header if required
+      if (requiresAuth && _storageService != null) {
+        final accessToken = await _storageService.getEncryptedString(ApiConstants.accessTokenKey);
+        if (accessToken != null) {
+          requestHeaders['Authorization'] = 'Bearer $accessToken';
+          AppLogger.debug('🔑 Added Bearer token to PUT request');
+        } else {
+          AppLogger.debug('❌ No access token available for authenticated PUT request');
+          throw UnauthorizedException('ไม่พบ token สำหรับการเข้าถึง');
+        }
+      }
+
+      final response = await _client.put(
+        url,
+        headers: requestHeaders,
+        body: jsonEncode(data),
+      ).timeout(Duration(seconds: ApiConstants.apiTimeout));
+
+      AppLogger.debug('📨 PUT Response: ${response.statusCode}');
+
+      if (ApiConstants.enableApiLogging) {
+        AppLogger.debug('📄 PUT Response Body: ${response.body}');
+      }
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return response.body.isNotEmpty 
+            ? jsonDecode(response.body) as Map<String, dynamic>
+            : <String, dynamic>{};
+      } else {
+        // Handle HTTP errors
+        switch (response.statusCode) {
+          case 401:
+            throw UnauthorizedException('ไม่มีสิทธิ์เข้าถึง');
+          case 403:
+            throw ForbiddenException('ไม่มีสิทธิ์เข้าถึง');
+          case 404:
+            throw NotFoundException('ไม่พบข้อมูลที่ต้องการ');
+          case 500:
+            throw ServerException('เซิร์ฟเวอร์เกิดข้อผิดพลาด');
+          default:
+            throw ServerException('เกิดข้อผิดพลาดที่ไม่คาดคิด (${response.statusCode})');
+        }
+      }
+    } on SocketException {
+      AppLogger.debug('📡 PUT Network error');
+      throw NetworkException('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
+    } catch (e) {
+      AppLogger.debug('❌ PUT API Error: $e');
+      throw ServerException('เกิดข้อผิดพลาดในการเชื่อมต่อ: ${e.toString()}');
+    }
+  }
+
   void dispose() {
     _client.close();
   }

@@ -25,7 +25,6 @@ class CourseListWidget extends StatelessWidget {
             collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             collapsedBackgroundColor: colorScheme.primaryContainer,
             backgroundColor: colorScheme.primaryContainer,
-            childrenPadding: EdgeInsets.symmetric(vertical: 12.0),
             tilePadding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0),
             title: ConstrainedBox(
               constraints: BoxConstraints(minHeight: 76),
@@ -50,7 +49,7 @@ class CourseListWidget extends StatelessWidget {
                 ],
               ),
             ),
-            children: [SectionListWidget(sections: item.sections)],
+            children: [SectionListWidget(sections: item.sections, isRegister: false,)],
           ),
         );
       },

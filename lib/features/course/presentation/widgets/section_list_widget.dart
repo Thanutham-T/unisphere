@@ -6,8 +6,9 @@ import '../widgets/schedule_list_widget.dart';
 
 class SectionListWidget extends StatelessWidget {
   final List<CourseSectionViewModel> sections;
+  final bool isRegister;
 
-  const SectionListWidget({super.key, required this.sections});
+  const SectionListWidget({super.key, required this.sections, required this.isRegister});
 
   @override
   Widget build(BuildContext context) {
@@ -26,49 +27,44 @@ class SectionListWidget extends StatelessWidget {
             motion: const StretchMotion(),
             children: [
               SlidableAction(
+                backgroundColor: isRegister ? colorScheme.onPrimary : colorScheme.primaryFixedDim,
                 onPressed: (context) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Delete')));
+                  if (isRegister) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Enroll')));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Withdrawn')));
+                  }
                 },
-                icon: Icons.delete,
-                label: 'Delete',
+                icon: isRegister ? Icons.add_box : Icons.delete_forever,
+                label: isRegister ? 'Enroll' : 'Withdrawn',
               ),
             ],
           ),
-          child: ListTile(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Section ${item.sectionCode}', style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold)),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
-                  decoration: BoxDecoration(color: colorScheme.onPrimary, borderRadius: BorderRadius.circular(20.0)),
-                  child: Text(item.enrolledText, style: Theme.of(context).textTheme.bodyMedium),
-                ),
-              ],
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header row
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text('Day & Time', style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
-                      ),
-                      Expanded(
-                        child: Text('Room', style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
-                      ),
-                      Expanded(
-                        child: Text('Instructor', style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
-                      ),
-                    ],
+          child: Container(
+            color: isRegister ? colorScheme.onPrimary : colorScheme.primaryContainer,
+            padding: EdgeInsets.symmetric(horizontal: 4.0),
+            child: ListTile(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Section ${item.sectionCode}',
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
                   ),
-                ),
-
-                ScheduleListWidget(schudules: item.schedules, instructors: item.instructors),
-              ],
+                  Container(
+                    width: 60.0,
+                    padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
+                    decoration: BoxDecoration(color: colorScheme.inversePrimary, borderRadius: BorderRadius.circular(20.0)),
+                    child: Text(item.enrolledText, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
+                  ),
+                ],
+              ),
+              subtitle: Column(
+                children: [
+                  SizedBox(height: 10.0),
+                  ScheduleListWidget(schudules: item.schedules, instructors: item.instructors),
+                ],
+              ),
             ),
           ),
         );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:unisphere/features/course/domain/usecase/get_all_courses_usecase.dart';
 
 import '../../core/cubits/fullscreen_cubit.dart';
 import '../../injector.dart' as di;
@@ -9,7 +10,12 @@ import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
+
 import '../../features/course/presentation/screens/course_screen.dart';
+import '../../features/course/presentation/blocs/course_bloc.dart';
+import '../../features/course/presentation/blocs/course_event.dart';
+import '../../features/course/presentation/blocs/course_filter_cubit.dart';
+
 import '../../features/schedule/presentation/screens/schedule_screen.dart';
 import '../../features/event/presentation/screens/event_screen.dart';
 import '../../features/study_group/presentation/screens/study_group_screen.dart';
@@ -21,20 +27,13 @@ import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/setting/presentation/screens/setting_screen.dart';
 
-
 class RouteBuilders {
   static Widget buildSplashScreen() {
-    return BlocProvider(
-      create: (_) => FullscreenCubit(),
-      child: const SplashScreen(),
-    );
+    return BlocProvider(create: (_) => FullscreenCubit(), child: const SplashScreen());
   }
 
   static Widget buildOnboardingScreen() {
-    return BlocProvider(
-      create: (_) => FullscreenCubit(),
-      child: const OnboardingScreen(),
-    );
+    return BlocProvider(create: (_) => FullscreenCubit(), child: const OnboardingScreen());
   }
 
   static Widget buildDashboardScreen() {
@@ -46,7 +45,13 @@ class RouteBuilders {
   }
 
   static Widget buildCourseScreen() {
-    return CourseScreen();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<CourseBloc>(create: (_) => CourseBloc(getCoursesUseCase: di.getIt<GetCoursesUseCase>())..add(LoadCourses())),
+        BlocProvider<CourseFilterCubit>(create: (_) => CourseFilterCubit()),
+      ],
+      child: CourseScreen(),
+    );
   }
 
   static Widget buildScheduleScreen() {
@@ -62,10 +67,7 @@ class RouteBuilders {
   }
 
   static Widget buildMapScreen() {
-    return BlocProvider(
-      create: (_) => di.getIt<MapBloc>(),
-      child: const CampusMapScreen(),
-    );
+    return BlocProvider(create: (_) => di.getIt<MapBloc>(), child: const CampusMapScreen());
   }
 
   static Widget buildAnnouncementScreen() {
@@ -73,10 +75,7 @@ class RouteBuilders {
   }
 
   static Widget buildLoginScreen() {
-    return BlocProvider(
-      create: (_) => di.getIt<AuthBloc>(),
-      child: const LoginScreen(),
-    );
+    return BlocProvider(create: (_) => di.getIt<AuthBloc>(), child: const LoginScreen());
   }
 
   static Widget buildRegisterScreen() {

@@ -9,7 +9,9 @@ class VirtualStudentCard extends StatefulWidget {
   final String faculty;
   final String major;
   final File? profileImage;
+  final String? profileImageUrl;
   final VoidCallback? onImageTap;
+  final bool isUploading;
 
   const VirtualStudentCard({
     required this.name,
@@ -17,7 +19,9 @@ class VirtualStudentCard extends StatefulWidget {
     required this.faculty,
     required this.major,
     this.profileImage,
+    this.profileImageUrl,
     this.onImageTap,
+    this.isUploading = false,
     Key? key,
   }) : super(key: key);
 
@@ -62,6 +66,15 @@ class _VirtualStudentCardState extends State<VirtualStudentCard>
       _animationController.reverse();
     }
     _isFront = !_isFront;
+  }
+
+  ImageProvider? _getProfileImage() {
+    if (widget.profileImage != null) {
+      return FileImage(widget.profileImage!);
+    } else if (widget.profileImageUrl != null && widget.profileImageUrl!.isNotEmpty) {
+      return NetworkImage(widget.profileImageUrl!);
+    }
+    return null;
   }
 
   @override
@@ -176,16 +189,33 @@ class _VirtualStudentCardState extends State<VirtualStudentCard>
                 ],
               ),
               child: GestureDetector(
-                onTap: widget.onImageTap,
-                child: CircleAvatar(
-                  radius: 32,
-                  backgroundImage: widget.profileImage != null 
-                      ? FileImage(widget.profileImage!) 
-                      : null,
-                  backgroundColor: Colors.white,
-                  child: widget.profileImage == null 
-                      ? Icon(Icons.person, size: 36, color: Colors.grey[600]) 
-                      : null,
+                onTap: widget.isUploading ? null : widget.onImageTap,
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 32,
+                      backgroundImage: _getProfileImage(),
+                      backgroundColor: Colors.white,
+                      child: _getProfileImage() == null 
+                          ? Icon(Icons.person, size: 36, color: Colors.grey[600]) 
+                          : null,
+                    ),
+                    if (widget.isUploading)
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.5),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),

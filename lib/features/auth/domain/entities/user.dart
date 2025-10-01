@@ -12,6 +12,7 @@ class User extends Equatable {
   // Additional fields for student profile
   final String? phoneNumber;
   final String? studentId;
+  final String? role;
   final String? faculty;
   final String? department;
   final String? major;
@@ -29,6 +30,7 @@ class User extends Equatable {
     required this.updatedAt,
     this.phoneNumber,
     this.studentId,
+    this.role,
     this.faculty,
     this.department,
     this.major,
@@ -48,6 +50,7 @@ class User extends Equatable {
         updatedAt,
         phoneNumber,
         studentId,
+        role,
         faculty,
         department,
         major,
